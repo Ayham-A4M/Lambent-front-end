@@ -44,6 +44,15 @@
   --color-social-green: #2E8B57;
 }
 
+.vertical-stripes {
+  overflow-y: hidden;
+  background: repeating-linear-gradient(45deg,
+      #f1f5f9,
+      #cbcdcf 2px,
+      #cbcdcf 2px,
+      #f1f5f9 5px);
+}
+
 :root {
   --radius: 0.65rem;
 
@@ -116,9 +125,9 @@
 
 /* font */
 
-.logo {
+.BitcountText {
   font-family: "Bitcount Single Ink", system-ui;
-  font-optical-sizing:auto;
+  font-optical-sizing: auto;
   font-weight: 200;
   font-style: normal;
   font-variation-settings:
