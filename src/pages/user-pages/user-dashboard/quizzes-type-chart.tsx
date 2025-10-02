@@ -1,4 +1,3 @@
-"use client"
 
 import { TrendingUp } from "lucide-react"
 import { Bar, BarChart, XAxis, YAxis } from "recharts"
@@ -21,42 +20,47 @@ import {
 export const description = "A mixed bar chart"
 
 const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
+  { type: "math", number: 275, fill: "var(--color-math)" },
+  { type: "physics", number: 200, fill: "var(--color-physics)" },
+  { type: "logic", number: 187, fill: "var(--color-logic)" },
+  { type: "programming", number: 173, fill: "var(--color-programming)" },
+  { type: "language", number: 90, fill: "var(--color-language)" },
+  { type: "chemistry", number: 110, fill: "var(--color-chemistry)" },
 ]
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  number: {
+    label: "Number",
   },
-  chrome: {
-    label: "Chrome",
+  math: {
+    label: "Math",
     color: "var(--chart-1)",
   },
-  safari: {
-    label: "Safari",
+  physics: {
+    label: "Physics",
     color: "var(--chart-2)",
   },
-  firefox: {
-    label: "Firefox",
+  logic: {
+    label: "Logic",
     color: "var(--chart-3)",
   },
-  edge: {
-    label: "Edge",
+  programming: {
+    label: "coding",
     color: "var(--chart-4)",
   },
-  other: {
-    label: "Other",
+  language: {
+    label: "language",
     color: "var(--chart-5)",
+  },
+  chemistry: {
+    label: "chemistry",
+    color: "var(--chart-6)",
   },
 } satisfies ChartConfig
 
 export function QuizzesChart() {
   return (
-    <Card>
+    <Card className="max-h-96 w-full max-w-96 ">
       <CardHeader>
         <CardTitle>Bar Chart - Mixed</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
@@ -72,21 +76,21 @@ export function QuizzesChart() {
             }}
           >
             <YAxis
-              dataKey="browser"
+              dataKey="type"
               type="category"
               tickLine={false}
-              tickMargin={10}
+              tickMargin={0}
               axisLine={false}
               tickFormatter={(value) =>
                 chartConfig[value as keyof typeof chartConfig]?.label
               }
             />
-            <XAxis dataKey="visitors" type="number" hide />
+            <XAxis dataKey="number" type="number" hide />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey="visitors" layout="vertical" radius={5} />
+            <Bar dataKey="number" layout="vertical" radius={5} />
           </BarChart>
         </ChartContainer>
       </CardContent>

@@ -13,7 +13,7 @@ const UserDashboard = () => {
                 <StatisticsCard title="Learning Time" value={"12 h"} icon={<PiClockFill className="text-blue-400" />} />
                 <StatisticsCard title="Problems Solved" value={1205} icon={<FaBrain className="text-pink-300" />} />
             </div>
-            <Card className="w-full  grid gird-cols-1 md:grid-cols-2">
+            <Card className="w-full  grid max-[991px]:grid-cols-1 grid-cols-2">
                 <div className="px-2">
                     <h1 className="text-2xl font-bold BitcountText">Learning Track</h1>
                     <CourseProgressCard title={"Algebra 3 (Advanced)"} value={20} courseType="math" />
@@ -21,13 +21,10 @@ const UserDashboard = () => {
                     <CourseProgressCard title={"Java Script 100 tips you should know"} value={50} courseType="programming" />
                     <CourseProgressCard title={"C++ Fundementals introduction"} value={66} courseType="programming" />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 ">
+                    <h1 className="text-2xl font-bold BitcountText px-2">Quizzes Track</h1>
                     <QuizzesChart />
                 </div>
-
-
-
-
             </Card>
 
 
