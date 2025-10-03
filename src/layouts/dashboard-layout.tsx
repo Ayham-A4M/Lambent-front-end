@@ -7,6 +7,7 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import useUser from "@/hooks/useUser"
 import { Separator } from "@/components/ui/separator"
 import {
     SidebarInset,
@@ -16,6 +17,7 @@ import {
 import { Outlet } from "react-router-dom"
 import { FaFire } from "react-icons/fa";
 const DashboardLayout = () => {
+    const USER=useUser()
     return (
         <SidebarProvider>
             <AppSidebar />
@@ -27,7 +29,7 @@ const DashboardLayout = () => {
                             orientation="vertical"
                             className="mr-2 data-[orientation=vertical]:h-4"
                         />
-                        <h1 className="font-extrabold BitcountText">Hey James !</h1>
+                        <h1 className="font-extrabold BitcountText">Hey {USER?.user?.userName}</h1>
                     </div>
                     <div className="pr-4">
                         <FaFire className={`text-gray-500 text-xl`} />

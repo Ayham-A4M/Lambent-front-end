@@ -75,6 +75,7 @@ const SignUp = ({ setIsRegestring }: { setIsRegestring: React.Dispatch<React.Set
 
         }
     })
+    form.watch(["confirmPassword", "password"]);
     const handleNextClick = async (): Promise<void> => {
         {
             if (stepNo < steps.length && await form.trigger(steps[stepNo - 1].requireFileds))
@@ -86,7 +87,7 @@ const SignUp = ({ setIsRegestring }: { setIsRegestring: React.Dispatch<React.Set
     // const onSubmit = (values: signupSchema) => {
     // }
     const mutationSignup = useMutation({
-        mutationFn: async (data: signupSchema): Promise<any> => { await signupRequest(data) },
+        mutationFn: async (data: signupSchema): Promise<any> => { return await signupRequest(data) },
         onSuccess: (data: any) => {
             toast.success(data?.msg || "you should login now");
             setIsRegestring(false);
@@ -99,13 +100,15 @@ const SignUp = ({ setIsRegestring }: { setIsRegestring: React.Dispatch<React.Set
 
 
     return (
-        <Card className='w-[95%] max-w-[450px] p-6 gap-4 bg-background rounded-none'>
+        <Card className='w-[95%] sign-up max-w-[450px] p-6 gap-4 bg-background rounded-none'>
             <CardHeader className="p-0">
 
-                <CardTitle className='text-2xl text-ring font-extrabold text-center'>Create New Account</CardTitle>
+                <CardTitle className='text-2xl BitcountText text-ring font-extrabold text-center'>
+                    Join the flow and unlock your potential
+                </CardTitle>
             </CardHeader>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit((values:signupSchema)=>{mutationSignup.mutate(values)})} className="space-y-6">
+                <form onSubmit={form.handleSubmit((values: signupSchema) => { mutationSignup.mutate(values) })} className="space-y-6">
 
 
                     {
@@ -221,14 +224,10 @@ const SignUp = ({ setIsRegestring }: { setIsRegestring: React.Dispatch<React.Set
                                                 {
                                                     form.getValues('confirmPassword')?.length > 0 && (
                                                         showPass ?
-                                                            <Button variant="outline" size="icon" className='cursor-pointer absolute top-[50%] translate-y-[-50%] right-[10px]' onClick={(e) => { e.preventDefault(); setShowPass(prev => !prev) }}>
-                                                                <Eye className='w-4' />
-                                                            </Button>
-
+                                                            <Eye className='w-4 cursor-pointer absolute top-[50%] translate-y-[-50%] right-[10px]' role='button' onClick={(e) => { e.preventDefault(); setShowPass(prev => !prev) }} />
                                                             :
-                                                            <Button variant="outline" size="icon" className='cursor-pointer absolute top-[50%] translate-y-[-50%] right-[10px]' onClick={(e) => { e.preventDefault(); setShowPass(prev => !prev) }}>
-                                                                <EyeOff className='w-4' />
-                                                            </Button>
+                                                            <EyeOff className='w-4 cursor-pointer absolute top-[50%] translate-y-[-50%] right-[10px]' role='button' onClick={(e) => { e.preventDefault(); setShowPass(prev => !prev) }} />
+
                                                     )
                                                 }
 
@@ -244,10 +243,16 @@ const SignUp = ({ setIsRegestring }: { setIsRegestring: React.Dispatch<React.Set
 
                     <ProgressSignup setStepNo={setStepNo} stepNo={stepNo} handleNextClick={handleNextClick} />
 
-                    {
-                        stepNo == steps.length &&
-                        <Button disabled={mutationSignup.isPending} type="submit" className='cursor-pointer w-full text-slate-200 rounded-none'>Submit</Button>
-                    }
+                    <Button
+                        disabled={mutationSignup.isPending || stepNo != steps.length ||
+                            (!form.getValues("password")) ||
+                            (!form.getValues("confirmPassword"))
+
+                        }
+                        type="submit"
+                        className='cursor-pointer w-full text-slate-200 rounded-none'>
+                        Submit
+                    </Button>
 
                 </form>
 

@@ -4,15 +4,12 @@ import Signup from "./signup"
 const Login_SignUp = () => {
     const [isRegestring, setIsRegestring] = useState<boolean>(true);
     return (
-        <div className=' flex login-signup min-h-screen justify-center items-center' >
-
-
-
+        <div className=' flex flex-col gap-5 login-signup min-h-screen justify-center items-center' >
             {
                 isRegestring ?
                     <Signup setIsRegestring={setIsRegestring} />
                     :
-                    <Login />
+                    <Login setIsRegestring={setIsRegestring} />
             }
 
 
