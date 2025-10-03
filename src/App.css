@@ -44,6 +44,7 @@
   --color-social-green: #2E8B57;
 }
 
+
 .vertical-stripes {
   overflow-y: hidden;
   background: repeating-linear-gradient(45deg,
@@ -55,7 +56,6 @@
 
 :root {
   --radius: 0.65rem;
-
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
@@ -90,6 +90,14 @@
   --sidebar-ring: oklch(0.606 0.25 292.717);
 }
 
+.login-signup{
+  background-image: url('./assets/svgs/background.svg');
+  /* object-fit: contain; */
+  object-fit: cover;
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 100%;
+}
 .dark {
   --background: oklch(0.141 0.005 285.823);
   --foreground: oklch(0.985 0 0);

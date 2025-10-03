@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button"
 type props = {
     stepNo: number,
     setStepNo: React.Dispatch<React.SetStateAction<number>>,
+    handleNextClick:()=>void
 }
-const ProgressSignup = ({ stepNo, setStepNo }: props) => {
+const ProgressSignup = ({ stepNo, setStepNo,handleNextClick }: props) => {
     return (
         <div className='w-full space-y-1'>
             <div className="flex justify-center">
@@ -20,7 +21,7 @@ const ProgressSignup = ({ stepNo, setStepNo }: props) => {
 
                 {
                     stepNo < 3 &&
-                    <Button type="button" variant="outline" size="icon" className="text-[.5rem] cursor-pointer" onClick={() => { setStepNo(prev => prev + 1) }}>Next</Button>
+                    <Button type="button" variant="outline" size="icon" className="text-[.5rem] cursor-pointer" onClick={() => { handleNextClick() }}>Next</Button>
                 }
             </div>
         </div>

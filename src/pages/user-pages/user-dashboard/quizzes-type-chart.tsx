@@ -60,7 +60,7 @@ const chartConfig = {
 
 export function QuizzesChart() {
   return (
-    <Card className="max-h-96 w-full max-w-96 ">
+    <Card className="min-h-96 w-full  ">
       <CardHeader>
         <CardTitle>Bar Chart - Mixed</CardTitle>
         <CardDescription>January - June 2024</CardDescription>

@@ -1,11 +1,10 @@
 import { useState } from "react"
 import Login from "./login"
 import Signup from "./signup"
-
 const Login_SignUp = () => {
     const [isRegestring, setIsRegestring] = useState<boolean>(true);
     return (
-        <div className='flex min-h-screen justify-center items-center'>
+        <div className=' flex login-signup min-h-screen justify-center items-center' >
 
 
 

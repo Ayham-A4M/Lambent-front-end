@@ -21,7 +21,7 @@ const UserDashboard = () => {
                     <CourseProgressCard title={"Java Script 100 tips you should know"} value={50} courseType="programming" />
                     <CourseProgressCard title={"C++ Fundementals introduction"} value={66} courseType="programming" />
                 </div>
-                <div className="space-y-2 ">
+                <div className="space-y-2 w-full">
                     <h1 className="text-2xl font-bold BitcountText px-2">Quizzes Track</h1>
                     <QuizzesChart />
                 </div>

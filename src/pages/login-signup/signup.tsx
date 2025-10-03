@@ -30,8 +30,10 @@ import {
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import ProgressSignup from './progress-signup';
-// import NextPrevButtons from './NextPrevButtons';
-// import handleSignUpProcess from './handler/handleSignUpProcess';
+
+import { useMutation } from '@tanstack/react-query';
+import signupRequest from './handler/signupRequest';
+import { toast } from "react-hot-toast"
 const signupSchema = z.object({
     userName: z.string().min(3, { message: 'user name must be at least 3' }).max(25, { message: 'maximum letters 25' }),
     email: z.email(),
@@ -50,7 +52,7 @@ const steps = [
         requireFileds: ['userName', 'email']
     }, {
         stepNo: 2,
-        requireFileds: ['age','gender']
+        requireFileds: ['age', 'gender']
     }, {
         stepNo: 3,
         requireFileds: ['password', 'confirmPassword']
@@ -79,25 +81,31 @@ const SignUp = ({ setIsRegestring }: { setIsRegestring: React.Dispatch<React.Set
                 setStepNo(prev => prev + 1)
         }
     }
-    // const onSubmit = (values: signupSchema) => {
-    //     handleSignUpProcess(values, setSendingReq);
-    // }
-
     const [showPass, setShowPass] = useState<boolean>(false);
     const [stepNo, setStepNo] = useState<number>(1);
+    // const onSubmit = (values: signupSchema) => {
+    // }
+    const mutationSignup = useMutation({
+        mutationFn: async (data: signupSchema): Promise<any> => { await signupRequest(data) },
+        onSuccess: (data: any) => {
+            toast.success(data?.msg || "you should login now");
+            setIsRegestring(false);
+        },
+        onError: (error) => {
+            console.log(error);
+        }
+    })
+
+
 
     return (
-        <Card className='w-[98%] max-w-[450px] p-6 gap-4 bg-background rounded-none'>
+        <Card className='w-[95%] max-w-[450px] p-6 gap-4 bg-background rounded-none'>
             <CardHeader className="p-0">
-                <div className='w-full flex items-center justify-center'>
-                    {/* <div className='flex items-center justify-center'>
-                        <img src={Logo} alt="logo" className='size-16' />
-                    </div> */}
-                </div>
+
                 <CardTitle className='text-2xl text-ring font-extrabold text-center'>Create New Account</CardTitle>
             </CardHeader>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit((data: signupSchema) => { console.log(data) })} className="space-y-6">
+                <form onSubmit={form.handleSubmit((values:signupSchema)=>{mutationSignup.mutate(values)})} className="space-y-6">
 
 
                     {
@@ -234,11 +242,11 @@ const SignUp = ({ setIsRegestring }: { setIsRegestring: React.Dispatch<React.Set
                         </>
                     }
 
-                    <ProgressSignup setStepNo={setStepNo} stepNo={stepNo} />
+                    <ProgressSignup setStepNo={setStepNo} stepNo={stepNo} handleNextClick={handleNextClick} />
 
                     {
                         stepNo == steps.length &&
-                        <Button type="submit" className='cursor-pointer w-full text-slate-200 rounded-none'>Submit</Button>
+                        <Button disabled={mutationSignup.isPending} type="submit" className='cursor-pointer w-full text-slate-200 rounded-none'>Submit</Button>
                     }
 
                 </form>
@@ -248,7 +256,7 @@ const SignUp = ({ setIsRegestring }: { setIsRegestring: React.Dispatch<React.Set
             <div className='text-center'>
                 or
             </div>
-            <Button className='cursor-pointer w-full rounded-none bg-zinc-600 text-slate-200' onClick={(e) => { e.preventDefault(); setIsRegestring(false) }}>
+            <Button disabled={mutationSignup.isPending} className='cursor-pointer w-full rounded-none bg-zinc-600 text-slate-200' onClick={(e) => { e.preventDefault(); setIsRegestring(false) }}>
                 already have account
             </Button>
 
