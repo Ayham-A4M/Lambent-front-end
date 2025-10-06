@@ -18,8 +18,6 @@ import {
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { useContext } from 'react';
-// import { UserContext } from '@/App';
 import toast from 'react-hot-toast';
 const loginSchema = z.object({
   email: z.email(),
@@ -43,7 +41,11 @@ const Login = ({ setIsRegestring }: { setIsRegestring: React.Dispatch<React.SetS
     mutationFn: async (data: loginType): Promise<any> => { return await loginRequest(data) },
     onSuccess: (data) => {
       toast.success(data?.msg || "logged in successfully");
-      USER?.setUser({ role: data?.role, userName: data?.userName });
+      if (USER) {
+        USER?.setUserName(data?.userName);
+        USER?.setRole(data?.role);
+      }
+
       if (data?.role === "user") {
         navigate("/user-dashboard", { replace: true });
       } else if (data?.role === "admin") {

@@ -15,7 +15,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-
+import useUser from "@/hooks/useUser"
 import { urls } from "@/helper/urls"
 
 // This is sample data.
@@ -39,7 +39,7 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  // const 
+  const USER=useUser();
   return (
     <Sidebar {...props}>
       <SidebarHeader className="border-b-2">
@@ -48,12 +48,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <SidebarMenu className="gap-0">
           {
-            urls?.user?.map((item) => (
+            USER &&
+            urls[USER?.role]?.map((item) => (
 
               <SidebarMenuItem key={item.title} className="h-auto" >
                 <SidebarMenuButton className="rounded-none p-0 h-auto border-b-2">
                   <NavLink to={item.url}
-                    className={(({ isActive }) => (`${isActive ? "bg-zinc-100 dark:bg-zinc-800 " : ""}   text-[1.1rem] text-popover-foreground  flex items-center justify-between py-3.5 px-5 w-full font-light`))}>
+                    className={(({ isActive }) => (`${isActive ? "bg-popover dark:bg-accent " : ""}   text-[1.1rem] text-popover-foreground  flex items-center justify-between py-3.5 px-5 w-full font-light`))}>
                     {item.title}
                     {
                       <item.icon className={`${item.icon_talwind_color}`}/>
