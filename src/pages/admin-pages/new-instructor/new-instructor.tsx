@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { MdOutlineFileUpload } from "react-icons/md";
 import mutationInstructor from "./handler/mutation-instructor";
 import { Eye, EyeOff } from "lucide-react";
-const instructorSchema = z.object({
+export const instructorSchema = z.object({
     email: z.email(),
     password: z.string().min(8).max(30),
     userName: z.string().min(3, { message: 'user name must be at least 3' }).max(25, { message: 'maximum letters 25' }),

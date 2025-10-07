@@ -9,7 +9,7 @@ import { createContext } from 'react'
 import ProtectRoute from './components/protectRoute'
 import useGetUser from './hooks/useGetUser'
 import NewInstructor from './pages/admin-pages/new-instructor/new-instructor'
-
+import AllInstructors from './pages/admin-pages/instructors/all-instructors'
 interface userContextInterface {
   userName: string,
   role: string,
@@ -42,7 +42,7 @@ function App() {
           <Route element={<DashboardLayout />}>
             <Route path='/admin-dashboard' element={<div>admin dashboard</div>} />
             <Route path='/all-users' element={<div>users</div>} />
-            <Route path='/instructors' element={<div>instructors</div>} />
+            <Route path='/instructors' element={<AllInstructors/>} />
             <Route path='/new-instructor' element={<NewInstructor />} />
           </Route>
         {/* </Route> */}
