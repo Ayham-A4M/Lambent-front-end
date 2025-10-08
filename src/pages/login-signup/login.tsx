@@ -22,15 +22,23 @@ import toast from 'react-hot-toast';
 const loginSchema = z.object({
   email: z.email(),
   password: z.string().min(8, { message: 'passowrd minimum length is 8' }).max(30, 'password maximum length is 30'),
+  isInstructor: z.boolean()
 })
 import { useNavigate } from 'react-router-dom';
 import loginRequest from './handler/loginRequest';
 import useUser from '@/hooks/useUser';
+import compareTwoDate from '@/helper/compareTwoDate';
+import { Checkbox } from '@/components/ui/checkbox';
 export type loginType = z.infer<typeof loginSchema>;
 
 const Login = ({ setIsRegestring }: { setIsRegestring: React.Dispatch<React.SetStateAction<boolean>> }) => {
   const form = useForm<loginType>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      isInstructor: false,
+    }
   })
   form.watch(["email", "password"]);
 
@@ -44,14 +52,18 @@ const Login = ({ setIsRegestring }: { setIsRegestring: React.Dispatch<React.SetS
       if (USER) {
         USER?.setUserName(data?.userName);
         USER?.setRole(data?.role);
+
       }
 
       if (data?.role === "user") {
+        if (USER) {
+          USER?.setIsThereStreakToday(compareTwoDate(new Date(data?.lastDateStreak), new Date()))
+        }
         navigate("/user-dashboard", { replace: true });
       } else if (data?.role === "admin") {
         navigate("/admin-dashboard", { replace: true });
       } else if (data?.role === "instructor") {
-        navigate("/instructor-dashboard", { replace: true });
+        navigate("/instructor/dashboard", { replace: true });
       }
     },
     onError: (error) => {
@@ -99,6 +111,23 @@ const Login = ({ setIsRegestring }: { setIsRegestring: React.Dispatch<React.SetS
 
                     <Input placeholder="••••••••••••" className='rounded-[2px]' type={showPass ? 'text' : 'password'} {...field} />
                   </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="isInstructor"
+            render={({ field }) => (
+              <FormItem className='flex items-center gap-3 justify-end'>
+                <FormLabel>I am instructor</FormLabel>
+                <FormControl>
+                  <Checkbox
+                    className='rounded-[2px]'
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

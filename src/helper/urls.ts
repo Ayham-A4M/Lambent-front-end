@@ -3,9 +3,12 @@ import { RiBookShelfFill } from "react-icons/ri";
 import { RiDashboardHorizontalFill } from "react-icons/ri";
 import { GiBookmarklet } from "react-icons/gi";
 import { FcMindMap } from "react-icons/fc";
-import { FaUsersCog,FaChalkboardTeacher } from "react-icons/fa";
+import { FaUsersCog, FaChalkboardTeacher } from "react-icons/fa";
 import { IoMdPersonAdd } from "react-icons/io";
 import type { IconType } from "react-icons/lib";
+import { TbZoomQuestionFilled } from "react-icons/tb";
+import { SiMdbook } from "react-icons/si";
+import { PiNotebookFill } from "react-icons/pi";
 interface urlType {
     title: string,
     url: string,
@@ -53,9 +56,21 @@ export const urls: urlsObj = {
         }
 
     ],
-    // instructor: [
-
-    // ],
+    instructor: [
+        {
+            title: "Dashboard",
+            url: "/instructor/dashboard",
+            icon: RiDashboardHorizontalFill,
+            icon_talwind_color: "text-primary"
+        },
+       
+        {
+            title: "My Courses",
+            url: "/instructor/courses",
+            icon: SiMdbook,
+            icon_talwind_color: "text-green-500"
+        }
+    ],
     admin: [
         {
             title: "Dashboard",

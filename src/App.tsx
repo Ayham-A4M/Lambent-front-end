@@ -10,22 +10,28 @@ import ProtectRoute from './components/protectRoute'
 import useGetUser from './hooks/useGetUser'
 import NewInstructor from './pages/admin-pages/new-instructor/new-instructor'
 import AllInstructors from './pages/admin-pages/instructors/all-instructors'
+import CreateCourse from './pages/instructor-pages/create-course/CreateCourse'
+import InstructorCourses from './pages/instructor-pages/my-courses/InstructorCourses'
+
 interface userContextInterface {
   userName: string,
   role: string,
   setRole: React.Dispatch<React.SetStateAction<string>>,
   setUserName: React.Dispatch<React.SetStateAction<string>>,
-  isLoading: boolean
+  isLoading: boolean,
+  isThereStreakToday: boolean,
+  setIsThereStreakToday: React.Dispatch<React.SetStateAction<boolean>>
+
 }
 
 export const UserContext = createContext<userContextInterface | null>(null);
 
 function App() {
 
-  const { isLoading, userName, setUserName, role, setRole } = useGetUser();
+  const { isLoading, userName, setUserName, role, setRole, isThereStreakToday, setIsThereStreakToday } = useGetUser();
 
   return (
-    <UserContext.Provider value={{ userName, role, setRole, setUserName, isLoading }}>
+    <UserContext.Provider value={{ userName, role, setRole, setUserName, isLoading, isThereStreakToday, setIsThereStreakToday }}>
       <Toaster position='top-right' />
       <Routes>
         <Route path='/' element={<Home />} />
@@ -38,14 +44,29 @@ function App() {
           </Route>
         </Route>
 
-        {/* <Route element={<ProtectRoute allowedRole={"admin"} />}> */}
+
+        <Route element={<ProtectRoute allowedRole={"instructor"} />}>
+          <Route element={<DashboardLayout />}>
+
+            <Route path='/instructor/dashboard' element={<div>instructor dashboard</div>} />
+            <Route path='/instructor/courses' element={<InstructorCourses />} />
+            <Route path='/instructor/courses/:courseId' element={<div>show lessons</div>} />
+            <Route path='/instructor/courses/:courseId/:lessonId' element={<div>show lesson with cahpters</div>} />
+            <Route path='/instructor/courses/new' element={<CreateCourse />} />
+            <Route path='/instructor/courses/:lessonId/edit' element={<div>edit lesson</div>} />
+            <Route path='/instructor/quiz-bank' element={<div>quizz bank</div>} />
+          </Route>
+        </Route>
+
+
+        <Route element={<ProtectRoute allowedRole={"admin"} />}>
           <Route element={<DashboardLayout />}>
             <Route path='/admin-dashboard' element={<div>admin dashboard</div>} />
             <Route path='/all-users' element={<div>users</div>} />
-            <Route path='/instructors' element={<AllInstructors/>} />
+            <Route path='/instructors' element={<AllInstructors />} />
             <Route path='/new-instructor' element={<NewInstructor />} />
           </Route>
-        {/* </Route> */}
+        </Route>
 
 
 

@@ -8,35 +8,34 @@ import { useRef, useState } from "react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { MdOutlineFileUpload } from "react-icons/md";
-import mutationInstructor from "./handler/mutation-instructor";
-import { Eye, EyeOff } from "lucide-react";
-export const instructorSchema = z.object({
-    email: z.email(),
-    password: z.string().min(8).max(30),
-    userName: z.string().min(3, { message: 'user name must be at least 3' }).max(25, { message: 'maximum letters 25' }),
-    age: z.number().min(25, { message: 'instructor age must be at least 25' }),
-    gender: z.enum(["male", "female"]),
-    country: z.string().min(5).max(50),
+import { TbMathFunction } from "react-icons/tb";
+import { GiAtomCore, GiChemicalDrop } from "react-icons/gi";
+import { LuBrainCircuit } from "react-icons/lu";
+import { IoLanguage } from "react-icons/io5";
+import { FaCode } from "react-icons/fa6";
+import { Checkbox } from "@/components/ui/checkbox";
+import courseMutaion from "./handler/course-mutation";
+import Spinner from "@/components/ui/spinner";
+export const courseSchema = z.object({
+    name: z.string().max(200),
+    description: z.string().max(1024),
+    isFree: z.boolean(),
+    type: z.enum(["Mathematics", "Logic", "Physics", "Chemistry", "Language", "Computer Science"]),
     image: z.file(),
-    bio: z.string().max(1024),
-
 })
-export type instructorType = z.infer<typeof instructorSchema>;
+export type courseType = z.infer<typeof courseSchema>;
 
-const NewInstructor = () => {
-    const form = useForm<instructorType>({
-        resolver: zodResolver(instructorSchema),
+const NewCourse = () => {
+    const form = useForm<courseType>({
+        resolver: zodResolver(courseSchema),
         defaultValues: {
-            age: 25,
-            bio: "",
-            country: "",
-            gender: "male",
-            userName: "",
-            email: "",
+            description: "",
+            isFree: false,
+            name: "",
         }
     });
     const imageRef = useRef<HTMLInputElement>(null)
-    const [showPass, setShowPass] = useState(false);
+
     const [previewImage, setPreviewImage] = useState("");
     const resetFields = () => {
         if (imageRef.current) {
@@ -45,94 +44,49 @@ const NewInstructor = () => {
         form.reset();
         setPreviewImage("");
     }
-    const mutation = mutationInstructor(resetFields);
+    const mutation = courseMutaion(resetFields);
 
 
     return (
         <div className="w-full">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit((data: instructorType) => { mutation.mutate(data) })} className="grid grid-cols-1 md:grid-cols-2 gap-4 gap-y-6">
+                <form onSubmit={form.handleSubmit((data: courseType) => { mutation.mutate(data) })} className="grid grid-cols-1 md:grid-cols-2 gap-4 gap-y-6">
                     <FormField
                         control={form.control}
-                        name="email"
+                        name="name"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel >Email</FormLabel>
+                                <FormLabel >Course Name</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="John44@gmail.com"   {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="password"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Password</FormLabel>
-                                <FormControl>
-                                    <div className='relative w-full'>
-                                        {
-                                            form.getValues('password')?.length > 0 && (
-                                                showPass ?
-                                                    <Eye className='w-4 cursor-pointer absolute top-[50%] translate-y-[-50%] right-[10px]' onClick={(e) => { e.preventDefault(); setShowPass(prev => !prev) }} />
-                                                    :
-                                                    <EyeOff className='w-4 cursor-pointer absolute top-[50%] translate-y-[-50%] right-[10px]' role='button' onClick={(e) => { e.preventDefault(); setShowPass(prev => !prev) }} />
-                                            )
-                                        }
-
-                                        <Input placeholder="••••••••••••" type={showPass ? 'text' : 'password'} {...field} />
-                                    </div>
+                                    <Input placeholder="(eg). Introduction to Calculus"   {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
 
-                    <FormField
-                        control={form.control}
-                        name="age"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel >Age</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="your age" type='number' className='rounded-[2px]' {...field} onChange={(e) => { form.setValue("age", parseInt(e.target.value)) }} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="userName"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel >User Name</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="John Doe"   {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+
 
                     <FormField
                         control={form.control}
-                        name="gender"
+                        name="type"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Gender</FormLabel>
+                                <FormLabel>Course Type</FormLabel>
                                 <FormControl >
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <SelectTrigger className="w-full">
-                                            <SelectValue placeholder="select gender" />
+                                            <SelectValue placeholder="select course type" />
                                         </SelectTrigger>
                                         <SelectContent  >
                                             <SelectGroup >
-                                                <SelectLabel>Gender</SelectLabel>
-                                                <SelectItem value="male">Male</SelectItem>
-                                                <SelectItem value="female">Female</SelectItem>
+                                                <SelectLabel>Course Types</SelectLabel>
+                                                <SelectItem value="Mathematics" className="flex items-center gap4">Mathematics <TbMathFunction /></SelectItem>
+                                                <SelectItem value="Logic" className="flex items-center gap4">Logic <LuBrainCircuit /></SelectItem>
+                                                <SelectItem value="Physics" className="flex items-center gap4">Physics <GiAtomCore /></SelectItem>
+                                                <SelectItem value="Chemistry" className="flex items-center gap4">Chemistry <GiChemicalDrop /></SelectItem>
+                                                <SelectItem value="Language" className="flex items-center gap4">Language <IoLanguage /></SelectItem>
+                                                <SelectItem value="Computer Science" className="flex items-center gap4">Computer Science  <FaCode /></SelectItem>
                                             </SelectGroup>
                                         </SelectContent>
                                     </Select>
@@ -141,42 +95,46 @@ const NewInstructor = () => {
                             </FormItem>
                         )}
                     />
-                    <FormField
-                        control={form.control}
-                        name="country"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Country</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="(eg). United Kingdom"  {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+
 
 
                     <FormField
                         control={form.control}
-                        name="bio"
+                        name="description"
                         render={({ field }) => (
                             <FormItem className="md:col-span-2 relative">
                                 <FormLabel >Bio (short sammury) about instructor</FormLabel>
                                 <FormControl>
-                                    <Textarea placeholder="John Doe"  {...field} />
+                                    <Textarea placeholder="(eg.) Learn the fundamentals of calculus including limits, derivatives, and integrals"  {...field} />
                                 </FormControl>
-                                <span className="top-0">{form.getValues("bio").length}/ 1024</span>
+                                <span className="top-0">{form.getValues("description").length}/ 1024</span>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
-
+                    <FormField
+                        control={form.control}
+                        name="isFree"
+                        render={({ field }) => (
+                            <FormItem className='flex items-center gap-3 justify-start'>
+                                <FormLabel>is course for free</FormLabel>
+                                <FormControl>
+                                    <Checkbox
+                                        className='rounded-[2px] border-2'
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                     <FormField
                         control={form.control}
                         name="image"
                         render={() => (
                             <FormItem className="md:col-span-2">
-                                <FormLabel>Instructor Image</FormLabel>
+                                <FormLabel>Course Image</FormLabel>
                                 <FormControl>
                                     <div>
 
@@ -217,7 +175,14 @@ const NewInstructor = () => {
                         )}
                     />
 
-                    <Button type="submit" disabled={mutation.isPending} className='cursor-pointer md:col-span-2 w-full rounded-none text-slate-200'>Submit</Button>
+                    <Button type="submit" disabled={mutation.isPending} className='cursor-pointer md:col-span-2 w-full rounded-none text-slate-200'>
+                        {
+                            mutation.isPending ?
+                                <Spinner talwindSize="size-6"/>
+                                :
+                                "Create Course"
+                        }
+                    </Button>
 
                 </form>
             </Form>
@@ -225,4 +190,4 @@ const NewInstructor = () => {
     )
 }
 
-export default NewInstructor
+export default NewCourse
