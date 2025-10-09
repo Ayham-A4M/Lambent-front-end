@@ -12,7 +12,8 @@ import NewInstructor from './pages/admin-pages/new-instructor/new-instructor'
 import AllInstructors from './pages/admin-pages/instructors/all-instructors'
 import CreateCourse from './pages/instructor-pages/create-course/CreateCourse'
 import InstructorCourses from './pages/instructor-pages/my-courses/InstructorCourses'
-
+import EditCourseInformation from './pages/instructor-pages/edit-course-information/EditCourseInformation'
+import Lessons from './pages/instructor-pages/lessons/Lessons'
 interface userContextInterface {
   userName: string,
   role: string,
@@ -50,7 +51,8 @@ function App() {
 
             <Route path='/instructor/dashboard' element={<div>instructor dashboard</div>} />
             <Route path='/instructor/courses' element={<InstructorCourses />} />
-            <Route path='/instructor/courses/:courseId' element={<div>show lessons</div>} />
+            <Route path='/instructor/courses/:courseId' element={<Lessons />} />
+            <Route path='/instructor/courses/:courseId/edit' element={<EditCourseInformation />} />
             <Route path='/instructor/courses/:courseId/:lessonId' element={<div>show lesson with cahpters</div>} />
             <Route path='/instructor/courses/new' element={<CreateCourse />} />
             <Route path='/instructor/courses/:lessonId/edit' element={<div>edit lesson</div>} />
@@ -71,6 +73,7 @@ function App() {
 
 
         <Route path='/login-signup' element={<Login_SignUp />} />
+        <Route path='/not-found' element={<div>not found</div>} />
       </Routes>
     </UserContext.Provider >
 

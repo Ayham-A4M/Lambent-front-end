@@ -16,27 +16,35 @@ import { FaCode } from "react-icons/fa6";
 import { Checkbox } from "@/components/ui/checkbox";
 import courseMutaion from "./handler/course-mutation";
 import Spinner from "@/components/ui/spinner";
-export const courseSchema = z.object({
+const baseCourseSchema = z.object({
     name: z.string().max(200),
     description: z.string().max(1024),
-    isFree: z.boolean(),
     type: z.enum(["Mathematics", "Logic", "Physics", "Chemistry", "Language", "Computer Science"]),
-    image: z.file(),
-})
-export type courseType = z.infer<typeof courseSchema>;
+    isFree: z.boolean(),
+});
+export const createCourseSchema = baseCourseSchema.extend({
+    image: z.instanceof(File, { message: "Image is required" }),
+});
+export const updateCourseSchema = baseCourseSchema.extend({
+    image: z.instanceof(File).optional(),
+});
+export type CreateCourseType = z.infer<typeof createCourseSchema>;
+export type UpdateCourseType = z.infer<typeof updateCourseSchema>;
 
-const NewCourse = () => {
-    const form = useForm<courseType>({
-        resolver: zodResolver(courseSchema),
+const NewCourse = ({ course }: { course?: CreateCourseType & { _id: string } }) => {
+    const form = useForm({
+        resolver: zodResolver(course ? updateCourseSchema : createCourseSchema),
         defaultValues: {
-            description: "",
-            isFree: false,
-            name: "",
+            description: course?.description || "",
+            isFree: course?.isFree || false,
+            name: course?.name || "",
+            type: course?.type || undefined,
         }
     });
+
     const imageRef = useRef<HTMLInputElement>(null)
 
-    const [previewImage, setPreviewImage] = useState("");
+    const [previewImage, setPreviewImage] = useState((course?.image) ? `http://localhost:8000${course.image}` : "");
     const resetFields = () => {
         if (imageRef.current) {
             imageRef.current.value = "";
@@ -44,13 +52,13 @@ const NewCourse = () => {
         form.reset();
         setPreviewImage("");
     }
-    const mutation = courseMutaion(resetFields);
+    const mutation = courseMutaion(resetFields, course ? course._id : "");
 
 
     return (
         <div className="w-full">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit((data: courseType) => { mutation.mutate(data) })} className="grid grid-cols-1 md:grid-cols-2 gap-4 gap-y-6">
+                <form onSubmit={form.handleSubmit((data: CreateCourseType | UpdateCourseType) => { mutation.mutate(data) })} className="grid grid-cols-1 md:grid-cols-2 gap-4 gap-y-6">
                     <FormField
                         control={form.control}
                         name="name"
@@ -64,9 +72,6 @@ const NewCourse = () => {
                             </FormItem>
                         )}
                     />
-
-
-
                     <FormField
                         control={form.control}
                         name="type"
@@ -178,9 +183,13 @@ const NewCourse = () => {
                     <Button type="submit" disabled={mutation.isPending} className='cursor-pointer md:col-span-2 w-full rounded-none text-slate-200'>
                         {
                             mutation.isPending ?
-                                <Spinner talwindSize="size-6"/>
+                                <Spinner talwindSize="size-6" />
                                 :
-                                "Create Course"
+                                course
+                                    ?
+                                    "Update Course"
+                                    :
+                                    "Create Course"
                         }
                     </Button>
 
