@@ -43,7 +43,7 @@ const AddLessonDialog = ({ disableButtons, onSubmit }: { disableButtons: boolean
         <Dialog    >
 
             <DialogTrigger asChild>
-                <Button>New Lesson</Button>
+                <Button className="cursor-pointer">New Lesson</Button>
             </DialogTrigger>
             <DialogContent className="max-h-[550px] overflow-auto" onOpenAutoFocus={(e) => { e.preventDefault() }}>
                 <DialogHeader>
