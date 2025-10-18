@@ -1,8 +1,8 @@
 import { $getNodeByKey, DecoratorNode, type LexicalNode, type NodeKey } from "lexical";
 import katex from "katex";
-import React, { useEffect, useRef, type JSX } from "react";
+import { useEffect, useState, useRef, type JSX } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-
+import MathEquationDialog from "../dialogs/math-equation-dialog";
 export class MathNode extends DecoratorNode<JSX.Element> {
     __latex: string;
 
@@ -61,6 +61,8 @@ export function MathComponent({
 }): JSX.Element {
     const ref = useRef<HTMLSpanElement>(null);
     const [editor] = useLexicalComposerContext();
+    const [equation, setEquation] = useState(latex);
+    const [open, setOpen] = useState<boolean>(false)
     useEffect(() => {
         if (ref.current) {
             katex.render(latex, ref.current, {
@@ -71,24 +73,29 @@ export function MathComponent({
     }, [latex]);
 
     return (
-        <span
-            ref={ref}
-            className="block text-start cursor-pointer"
-            title="Click to edit"
-            onClick={() => {
-                const newLatex = prompt("Edit LaTeX equation:", latex);
-                if (newLatex !== null) {
-                    
-                    if (editor) {
-                        editor.update(() => {
-                            const node = $getNodeByKey(nodeKey);
-                            if ($isMathNode(node))
-                                node.setLatex(newLatex)
-                        });
+        <>
+
+            <span
+                ref={ref}
+                className="cursor-pointer flex items-start p-1 outline-none bg-transparent [&_.katex-display]:overflow-x-auto"
+                title="Click to edit"
+                onClick={() => { setOpen(true) }}
+            />
+            <MathEquationDialog open={open} setEquation={setEquation}
+                onSubmit={() => {
+                    if (equation !== null) {
+                        if (editor) {
+                            editor.update(() => {
+                                const node = $getNodeByKey(nodeKey);
+                                if ($isMathNode(node))
+                                    node.setLatex(equation)
+                            });
+                        }
                     }
-                }
-            }}
-        />
+                }}
+                equation={equation}
+                onClose={() => { setOpen(false) }} />
+        </>
     );
 }
 

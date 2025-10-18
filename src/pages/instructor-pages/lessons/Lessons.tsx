@@ -1,15 +1,15 @@
-import useGetLessons from "@/hooks/useGetLessons"
 import { useParams } from "react-router-dom"
 import SpinnerPage from "@/components/spinner-page"
-import AddLessonDialog, { type lessonType } from "@/components/dialogs/add-lesson-dialog"
+import AddLessonDialog, { type lessonType } from "@/components/dialogs/lesson-dialog"
 import { FaCirclePlay } from "react-icons/fa6";
 import LessonCard from "@/components/shared/lesson-card"
 import useUser from "@/hooks/useUser"
 import lessonMutation from "./handler/lesson-mutation"
+import useGET from "@/hooks/useGet";
 const Lessons = () => {
     const USER = useUser();
     const { courseId } = useParams()
-    const { data, isLoading } = useGetLessons(courseId);
+    const { data, isLoading } = useGET(`/api/instructor/course/${courseId}/lessons`, ["lessons"]);
     const mutation = lessonMutation(courseId);
     return (
         <div className="relative h-full ">
@@ -32,13 +32,10 @@ const Lessons = () => {
                     :
                     (data?.lessons?.length > 0 && USER)
                         ?
-                        <div className="flex items-center justify-between max-[1081px]:justify-evenly flex-wrap gap-y-4">
+                        <div className="flex items-center justify-between gap-8 md:justify-start flex-wrap">
                             {
                                 data?.lessons?.map((e: any) => (
-                                    <>
-                                        <LessonCard key={e?._id} lesson={e} role={USER.role} />
-                                
-                                    </>
+                                    <LessonCard key={e?._id} lesson={e} role={USER && USER.role} />
                                 ))
                             }
 

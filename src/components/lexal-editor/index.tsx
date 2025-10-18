@@ -8,8 +8,7 @@ import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 import Toolbar from "./toolbar";
-import { $getRoot } from "lexical";
-import type { EditorState } from "lexical"
+import { $createParagraphNode, $createTextNode, $getRoot, type EditorState } from "lexical"
 import { HeadingNode } from "@lexical/rich-text";
 import { LinkNode } from '@lexical/link';
 import { AutoLinkNode } from "@lexical/link";
@@ -17,8 +16,18 @@ import { AutoLinkPlugin } from '@lexical/react/LexicalAutoLinkPlugin';
 import type { LinkMatcherResult } from "node_modules/@lexical/link/LexicalAutoLinkExtension";
 import ClickableLinkPlugin from "./clickableLinkPlugin";
 import { MathNode } from "./mathNode";
+import { ListNode, ListItemNode } from '@lexical/list';
+import { ListPlugin } from '@lexical/react/LexicalListPlugin';
+import { HighlightPlugin } from "./HighlightPlugin";
+import {
+  HorizontalRuleNode
+} from "@lexical/extension";
+import { useCallback, useEffect, useRef } from "react";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+
 interface LexicalEditorProps {
   onChange?: (text: string) => void;
+  jsonState?: string,
 }
 export const exampleTheme = {
   paragraph: 'text-blue-500', //like css class 
@@ -31,12 +40,13 @@ export const exampleTheme = {
     h5: 'font-light text-light',
     h6: 'font-light text-extralight',
   },
+  hr: "w-full bg-primary h-[2px] my-2",
   list: {
     nested: {
       listitem: 'editor-nested-listitem',
     },
-    ol: 'editor-list-ol',
-    ul: 'editor-list-ul',
+    ol: 'list-decimal pl-4',
+    ul: 'list-disc pl-6',
     listitem: 'editor-listItem',
     listitemChecked: 'editor-listItemChecked',
     listitemUnchecked: 'editor-listItemUnchecked',
@@ -89,58 +99,93 @@ export const exampleTheme = {
   },
 };
 
-export default function LexicalEditor({ onChange }: LexicalEditorProps) {
+
+
+const LoadInitialContent: React.FC<{ content: any }> = ({ content }) => {
+  const [editor] = useLexicalComposerContext();
+  const isLoaded = useRef(false);
+
+  useEffect(() => {
+    if (isLoaded.current || !content) return;
+    const timeout = setTimeout(() => {
+
+      try {
+        editor.update(() => {
+          const editorState = editor.parseEditorState(content);
+          editor.setEditorState(editorState);
+        });
+        isLoaded.current = true;
+      } catch (err) {
+        console.error("Failed to parse lexical data:", err);
+      }
+
+    }, 0)
+    return () => clearTimeout(timeout)
+  }, [content, editor]);
+  return null;
+};
+
+
+export default function LexicalEditor({ onChange, jsonState }: LexicalEditorProps) {
   const initialConfig = {
     namespace: "MyLexicalEditor",
     theme: exampleTheme,
     onError: (error: Error) => console.error(error),
-    nodes: [HeadingNode, LinkNode, AutoLinkNode, MathNode],
-  };
-
-
-
-
-  const handleChange = (editorState: EditorState) => {
-    editorState.read(() => {
+    nodes: [HeadingNode, LinkNode, AutoLinkNode, MathNode, ListNode, ListItemNode, HorizontalRuleNode],
+    editorState: () => {
       const root = $getRoot();
-      const text = root.getTextContent();
-      onChange?.(text);
-    });
+      if (root.isEmpty()) {
+        const paragraph = $createParagraphNode();
+        paragraph.append($createTextNode("")); // empty paragraph
+        root.append(paragraph);
+      }
+    },
   };
-  // const MATCHER = [(text: string) => {
-  //     const match = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.exec(text);
-  //     return match ? { index: match.index, length: match[0].length, url: match[0] } : null;
-  //   },]
-  return (
-    <LexicalComposer initialConfig={initialConfig as any}>
-      <div className="border rounded-md">
-        <Toolbar />
-        <RichTextPlugin
-          contentEditable={
-            <ContentEditable className="p-2 min-h-[120px] outline-none" />
-          }
-          placeholder={<div className="text-gray-400 p-2">Type here...</div>}
-          ErrorBoundary={LexicalErrorBoundary}
-        />
-        <LinkPlugin />
-        <AutoLinkPlugin matchers={[
-          (text: string): LinkMatcherResult | null => {
-            const match = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.exec(text);
-            return match
-              ? {
-                index: match.index,
-                length: match[0].length,
-                text: match[0],
-                url: match[0],
-              }
-              : null;
-          },
-        ]}
 
-        />
-        <ClickableLinkPlugin />
-        <HistoryPlugin />
-        <OnChangePlugin onChange={handleChange} />
+
+
+  const handleChange = useCallback((editorState: EditorState) => {
+    const json = editorState.toJSON();
+    onChange?.(JSON.stringify(json));
+  }, [onChange]);
+  return (
+
+    <LexicalComposer initialConfig={initialConfig as any} >
+      <div className="border rounded-md ">
+        <Toolbar />
+        <div className="h-[500px] overflow-auto">
+
+          <RichTextPlugin
+            contentEditable={
+              <ContentEditable className="p-2 min-h-[120px] outline-none" />
+            }
+            placeholder={<div className="text-gray-400 p-2">Type here...</div>}
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+
+          <LinkPlugin />
+          <AutoLinkPlugin matchers={[
+            (text: string): LinkMatcherResult | null => {
+              const match = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.exec(text);
+              return match
+                ? {
+                  index: match.index,
+                  length: match[0].length,
+                  text: match[0],
+                  url: match[0],
+                }
+                : null;
+            },
+          ]}
+
+          />
+          <HighlightPlugin />
+          <ListPlugin />
+          <ClickableLinkPlugin />
+          <HistoryPlugin />
+          {jsonState && <LoadInitialContent content={jsonState} />}
+          <OnChangePlugin onChange={handleChange} />
+        </div>
       </div>
     </LexicalComposer>
   );

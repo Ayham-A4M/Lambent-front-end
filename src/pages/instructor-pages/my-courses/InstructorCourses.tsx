@@ -34,7 +34,7 @@ const InstructorCourses = () => {
                         </Button>
                         {
                             data?.courses.map((e: any) => (
-                                <CourseCard course={e} />
+                                <CourseCard course={e} key={e?._id} />
                             ))
                         }
                     </div>

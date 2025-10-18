@@ -35,22 +35,22 @@ export default function CourseCard({ course, onClick, className }: Props) {
       <div className="relative h-44 w-full bg-muted/50">
         <img
           src={`http://localhost:8000${course?.image}`}
-          alt={`Course image for ${course.name}`}
+          alt={`Course image for ${course?.name}`}
           className="object-cover w-full h-full"
 
         />
 
         <div className="absolute top-3 left-3 flex items-center gap-2">
           <Badge variant="secondary" className="uppercase text-xs">
-            {course.type}
+            {course?.type}
           </Badge>
           <Badge
             className={cn(
               "text-xs",
-              course.isFree ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"
+              course?.isFree ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"
             )}
           >
-            {course.isFree ? "free" : "subscription"}
+            {course?.isFree ? "free" : "subscription"}
           </Badge>
         </div>
       </div>
@@ -58,22 +58,22 @@ export default function CourseCard({ course, onClick, className }: Props) {
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
           <div className="flex-1">
-            <h3 className="text-lg font-semibold leading-tight">{course.name}</h3>
-            <p className="mt-1 text-sm text-muted-foreground line-clamp-3">{course.description}</p>
+            <h3 className="text-lg font-semibold leading-tight">{course?.name}</h3>
+            <p className="mt-1 text-sm text-muted-foreground line-clamp-3">{course?.description}</p>
 
             <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Star className="size-4" />
-                <span>{course.rating.toFixed(1)}</span>
+                <span>{course?.rating.toFixed(1)}</span>
               </div>
 
               <div className="flex items-center gap-1">
                 <PlayCircle className="size-4" />
-                <span>{course.totalLessons} lessons</span>
+                <span>{course?.totalLessons} lessons</span>
               </div>
               <div className="flex items-center gap-1">
                 <PiGraduationCap className="size-4" />
-                <span>{course.totalLearners} learners</span>
+                <span>{course?.totalLearners} learners</span>
               </div>
 
             </div>
@@ -108,8 +108,8 @@ export default function CourseCard({ course, onClick, className }: Props) {
 
       <CardFooter className="p-4 pt-0">
         <div className="w-full flex items-center justify-between">
-          <div className="text-xs text-muted-foreground">{course.type} • {course.isFree ? "Free" : "subscription"}</div>
-          <div className="text-xs">{course._id ? `#${course._id.slice(0, 5)}` : null}</div>
+          <div className="text-xs text-muted-foreground">{course?.type} • {course?.isFree ? "Free" : "subscription"}</div>
+          <div className="text-xs">{course?._id ? `#${course?._id.slice(0, 5)}` : null}</div>
         </div>
       </CardFooter>
     </Card>

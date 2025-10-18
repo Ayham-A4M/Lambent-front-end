@@ -1,6 +1,6 @@
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import api from '@/utils/axiosInterceptor';
-import type { lessonType } from '@/components/dialogs/add-lesson-dialog';
+import type { lessonType } from '@/components/dialogs/lesson-dialog';
 import toast from 'react-hot-toast';
 const lessonMutation = (courseId: string | undefined) => {
     const queryClient = useQueryClient();

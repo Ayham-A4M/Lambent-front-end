@@ -16,6 +16,7 @@ import InstructorCourses from './pages/instructor-pages/my-courses/InstructorCou
 import EditCourseInformation from './pages/instructor-pages/edit-course-information/EditCourseInformation'
 import Lessons from './pages/instructor-pages/lessons/Lessons'
 import EditLesson from './pages/instructor-pages/edit-lessson/edit-lesson'
+import AddNewPage from './pages/instructor-pages/add-new-page/add-new-page';
 interface userContextInterface {
   userName: string,
   role: string,
@@ -55,9 +56,11 @@ function App() {
             <Route path='/instructor/courses' element={<InstructorCourses />} />
             <Route path='/instructor/courses/:courseId' element={<Lessons />} />
             <Route path='/instructor/courses/:courseId/edit' element={<EditCourseInformation />} />
-            <Route path='/instructor/courses/:courseId/:lessonId/edit' element={<EditLesson />} />
+            <Route path='/instructor/courses/:courseId/lessons/:lessonId/edit' element={<EditLesson />} />
+            <Route path='/instructor/courses/:courseId/:lessonId/new-page' element={<AddNewPage />} />
+
             <Route path='/instructor/courses/new' element={<CreateCourse />} />
-            <Route path='/instructor/courses/:lessonId/edit' element={<div>edit lesson</div>} />
+
             <Route path='/instructor/quiz-bank' element={<div>quizz bank</div>} />
           </Route>
         </Route>

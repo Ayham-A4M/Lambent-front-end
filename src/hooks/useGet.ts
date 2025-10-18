@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import api from "@/utils/axiosInterceptor";
-const useGET = (endpoint:string,queryKeys:string[]) => {
+const useGET = (endpoint: string, queryKeys: string[]) => {
     const { data, isLoading } = useQuery({
         queryKey: queryKeys,
         queryFn: async () => {
@@ -12,6 +12,7 @@ const useGET = (endpoint:string,queryKeys:string[]) => {
                 console.log(err, "errr");
             }
         },
+        staleTime: 0
     });
     return { data, isLoading }
 

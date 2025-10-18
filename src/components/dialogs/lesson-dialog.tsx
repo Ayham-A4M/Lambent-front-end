@@ -29,14 +29,20 @@ const lessonSchema = z.object({
     name: z.string().min(10, { message: "minimum length is 10" }).max(150, { message: "maximum length is 150" }),
     description: z.string().min(1, { message: "description is required field" }).max(1024, { message: "maximum length is 1024" }),
 })
+interface props {
+    disableButtons: boolean,
+    onSubmit: (data: any) => void
+    description?: string,
+    name?: string
+}
 export type lessonType = z.infer<typeof lessonSchema>;
-const AddLessonDialog = ({ disableButtons, onSubmit }: { disableButtons: boolean, onSubmit: (data: any) => void }) => {
+const LessonDialog = ({ disableButtons, onSubmit, name, description }: props) => {
 
     const form = useForm<lessonType>({
         resolver: zodResolver(lessonSchema),
         defaultValues: {
-            name: "",
-            description: "",
+            name: name || "",
+            description: description || "",
         }
     })
     return (
@@ -94,7 +100,7 @@ const AddLessonDialog = ({ disableButtons, onSubmit }: { disableButtons: boolean
                                         disableButtons ?
                                             <Spinner talwindSize="size-6" />
                                             :
-                                            "Submit"
+                                            "Save Lesson"
                                     }
                                 </Button>
                             </DialogFooter>
@@ -109,4 +115,4 @@ const AddLessonDialog = ({ disableButtons, onSubmit }: { disableButtons: boolean
     )
 }
 
-export default AddLessonDialog
+export default LessonDialog
