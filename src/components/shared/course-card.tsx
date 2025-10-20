@@ -1,13 +1,9 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Eye } from "lucide-react";
-import { Edit } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PiGraduationCap } from "react-icons/pi";
 import { Star, PlayCircle } from "lucide-react";
-import useUser from "@/hooks/useUser";
-import { Link } from "react-router-dom";
+import AccessCourseCardButtons from "../access-course-card-buttons";
 export type Course = {
   _id: string;
   image: string; // url or static import
@@ -18,6 +14,7 @@ export type Course = {
   totalLessons: number;
   totalLearners: string; // e.g. "4h 30m"
   rating: number; // 0-5
+  hasAccess?: boolean,
 };
 
 type Props = {
@@ -27,8 +24,7 @@ type Props = {
 
 };
 
-export default function CourseCard({ course, onClick, className }: Props) {
-  const USER = useUser()
+export default function CourseCard({ course, className }: Props) {
 
   return (
     <Card className={cn("max-w-sm rounded-2xl pt-0 shadow-lg overflow-hidden bg-card", className)}>
@@ -41,13 +37,13 @@ export default function CourseCard({ course, onClick, className }: Props) {
         />
 
         <div className="absolute top-3 left-3 flex items-center gap-2">
-          <Badge variant="secondary" className="uppercase text-xs">
+          <Badge variant="secondary" className="text-xs rounded-[6px]">
             {course?.type}
           </Badge>
           <Badge
             className={cn(
-              "text-xs",
-              course?.isFree ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"
+              "text-xs rounded-[6px]",
+              course?.isFree ? "bg-emerald-100  text-emerald-800" : "bg-amber-100 text-amber-800"
             )}
           >
             {course?.isFree ? "free" : "subscription"}
@@ -80,28 +76,7 @@ export default function CourseCard({ course, onClick, className }: Props) {
           </div>
 
           <div className="flex-shrink-0">
-            {
-              USER&& 
-              <>
-                {
-                  USER?.role === "instructor" ?
-                    <div className="w-fit flex flex-col gap-y-2">
-                      <Button size="icon" variant={"outline"} type="button" className="rounded-xl">
-                        <Link to={`/instructor/courses/${course?._id}`}><Eye /></Link>
-                      </Button>
-                      <Button size="icon" variant={"outline"} type="button" className="rounded-xl">
-                        <Link to={`/instructor/courses/${course?._id}/edit`} state={course}><Edit /></Link>
-                      </Button>
-
-                    </div>
-                    :
-                    <Button size="sm" className="text-slate-100" onClick={() => onClick?.(course)}>
-                      View
-                    </Button>
-                }
-              </>
-
-            }
+            <AccessCourseCardButtons course={course} />
           </div>
         </div>
       </CardContent>
@@ -115,52 +90,4 @@ export default function CourseCard({ course, onClick, className }: Props) {
     </Card>
   );
 }
-
-// --- Demo data for testing ---
-// export const demoCourses: Course[] = [
-//   {
-//     id: 1,
-//     image: math,
-//     name: "Introduction to Calculus",
-//     category: "Mathematics",
-//     priceType: "subscription",
-//     description: "Learn the fundamentals of calculus including limits, derivatives, and integrals.",
-//     lessons: 25,
-//     duration: "6h 30m",
-//     rating: 4.8,
-//   },
-//   {
-//     id: 2,
-//     image: phy,
-//     name: "Physics for Beginners",
-//     category: "Physics",
-//     priceType: "free",
-//     description: "Understand the core principles of motion, forces, and energy.",
-//     lessons: 18,
-//     duration: "4h 10m",
-//     rating: 4.5,
-//   },
-//   {
-//     id: 3,
-//     image: chem,
-//     name: "Organic Chemistry Basics",
-//     category: "Chemistry",
-//     priceType: "one-time",
-//     description: "Explore organic compounds, reactions, and molecular structures.",
-//     lessons: 30,
-//     duration: "8h 15m",
-//     rating: 4.7,
-//   },
-//   {
-//     id: 4,
-//     image: cs,
-//     name: "Modern Web Development",
-//     category: "Programming",
-//     priceType: "subscription",
-//     description: "Build responsive websites using HTML, CSS, JavaScript, and React.",
-//     lessons: 40,
-//     duration: "10h",
-//     rating: 4.9,
-//   },
-// ];
 

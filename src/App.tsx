@@ -17,6 +17,8 @@ import EditCourseInformation from './pages/instructor-pages/edit-course-informat
 import Lessons from './pages/instructor-pages/lessons/Lessons'
 import EditLesson from './pages/instructor-pages/edit-lessson/edit-lesson'
 import AddNewPage from './pages/instructor-pages/add-new-page/add-new-page';
+import Courses from './pages/user-pages/courses/Courses';
+import LessonView from './pages/user-pages/view-lesson/LessonView';
 interface userContextInterface {
   userName: string,
   role: string,
@@ -42,9 +44,12 @@ function App() {
         <Route element={<ProtectRoute allowedRole={"user"} />}>
           <Route element={<DashboardLayout />}>
             <Route path='/user-dashboard' element={<UserDashboard />} />
-            <Route path='/courses' element={<div>courses</div>} />
+            <Route path='/courses' element={<Courses />} />
             <Route path='/badges' element={<div>badges</div>} />
             <Route path='/my-courses' element={<div>my courses</div>} />
+            <Route path='courses/:courseId' element={<Lessons />} />
+            <Route path='courses/:courseId/lessons/:lessonId/view' element={<LessonView />} />
+
           </Route>
         </Route>
 

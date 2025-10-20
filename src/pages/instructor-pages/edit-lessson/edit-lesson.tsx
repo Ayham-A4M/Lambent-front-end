@@ -7,6 +7,7 @@ import { Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import usePUT from "@/hooks/usePUT";
 import Spinner from "@/components/ui/spinner";
+import LessonInformation from "@/components/shared/lesson-information";
 const EditLesson = () => {
     const location = useLocation()
     const { lessonId, courseId } = useParams();
@@ -29,15 +30,14 @@ const EditLesson = () => {
                     :
                     <div className="space-y-3">
                         <div className="space-y-3">
-                            <div className="flex items-center gap-3 text-xl text-primary">
-                                <h1>{data?.lesson?.name}</h1>
-                                <span>#{lesson?.lessonNumber}</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-md text-primary">
-                                <p >Views : {data?.lesson?.viewsNumber}</p>
-                                <Eye className="size-5" />
-                            </div>
-                            <p className="text-sm">{data?.lesson?.description}</p>
+                            <LessonInformation
+                                lesson={{
+                                    name: data?.lesson?.name,
+                                    lessonNumber: lesson?.lessonNumber,
+                                    description: data?.lesson?.description,
+                                    viewsNumber: data?.lesson?.viewsNumber
+                                }}
+                            />
                             {
                                 data?.lesson?.lessonContent !== jsonState &&
                                 <div className="flex items-center justify-end">
@@ -51,7 +51,7 @@ const EditLesson = () => {
                                     </Button>
                                 </div>
                             }
-                            
+
                         </div>
 
                         {

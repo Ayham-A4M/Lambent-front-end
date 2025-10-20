@@ -77,7 +77,7 @@ export function MathComponent({
 
             <span
                 ref={ref}
-                className="cursor-pointer flex items-start p-1 outline-none bg-transparent [&_.katex-display]:overflow-x-auto"
+                className="cursor-pointer flex items-start p-[2px] outline-none bg-transparent [&_.katex-display]:overflow-x-auto"
                 title="Click to edit"
                 onClick={() => { setOpen(true) }}
             />

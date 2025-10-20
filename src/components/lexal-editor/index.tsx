@@ -22,9 +22,8 @@ import { HighlightPlugin } from "./HighlightPlugin";
 import {
   HorizontalRuleNode
 } from "@lexical/extension";
-import { useCallback, useEffect, useRef } from "react";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-
+import { useCallback } from "react";
+import LoadInitialContent from "./LoadInitialContent";
 interface LexicalEditorProps {
   onChange?: (text: string) => void;
   jsonState?: string,
@@ -101,29 +100,29 @@ export const exampleTheme = {
 
 
 
-const LoadInitialContent: React.FC<{ content: any }> = ({ content }) => {
-  const [editor] = useLexicalComposerContext();
-  const isLoaded = useRef(false);
+//  const LoadInitialContent: React.FC<{ content: any }> = ({ content }) => {
+//   const [editor] = useLexicalComposerContext();
+//   const isLoaded = useRef(false);
 
-  useEffect(() => {
-    if (isLoaded.current || !content) return;
-    const timeout = setTimeout(() => {
+//   useEffect(() => {
+//     if (isLoaded.current || !content) return;
+//     const timeout = setTimeout(() => {
 
-      try {
-        editor.update(() => {
-          const editorState = editor.parseEditorState(content);
-          editor.setEditorState(editorState);
-        });
-        isLoaded.current = true;
-      } catch (err) {
-        console.error("Failed to parse lexical data:", err);
-      }
+//       try {
+//         editor.update(() => {
+//           const editorState = editor.parseEditorState(content);
+//           editor.setEditorState(editorState);
+//         });
+//         isLoaded.current = true;
+//       } catch (err) {
+//         console.error("Failed to parse lexical data:", err);
+//       }
 
-    }, 0)
-    return () => clearTimeout(timeout)
-  }, [content, editor]);
-  return null;
-};
+//     }, 0)
+//     return () => clearTimeout(timeout)
+//   }, [content, editor]);
+//   return null;
+// };
 
 
 export default function LexicalEditor({ onChange, jsonState }: LexicalEditorProps) {

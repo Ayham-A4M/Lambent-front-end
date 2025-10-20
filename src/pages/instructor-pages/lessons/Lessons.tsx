@@ -9,7 +9,7 @@ import useGET from "@/hooks/useGet";
 const Lessons = () => {
     const USER = useUser();
     const { courseId } = useParams()
-    const { data, isLoading } = useGET(`/api/instructor/course/${courseId}/lessons`, ["lessons"]);
+    const { data, isLoading } = useGET(`/api/${USER && USER?.role}/courses/${courseId}/lessons`, ["lessons"]);
     const mutation = lessonMutation(courseId);
     return (
         <div className="relative h-full ">
