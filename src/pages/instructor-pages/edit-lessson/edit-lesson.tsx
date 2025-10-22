@@ -3,11 +3,12 @@ import { useLocation, useParams } from "react-router-dom"
 import useGET from "@/hooks/useGet";
 import SpinnerPage from "@/components/spinner-page";
 import LexicalEditor from "@/components/lexal-editor";
-import { Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import usePUT from "@/hooks/usePUT";
 import Spinner from "@/components/ui/spinner";
 import LessonInformation from "@/components/shared/lesson-information";
+import AddNewQuestion from "./AddNewQuestion";
+import { type questionType } from "./AddNewQuestion";
 const EditLesson = () => {
     const location = useLocation()
     const { lessonId, courseId } = useParams();
@@ -22,6 +23,7 @@ const EditLesson = () => {
             setJsonState(JSON.parse(data?.lesson?.lessonContent));
         }
     }, [data])
+    const [newQuestions, setNewQuestions] = useState<questionType[] | null>(null);
     return (
         <>
             {
@@ -35,9 +37,9 @@ const EditLesson = () => {
                                     name: data?.lesson?.name,
                                     lessonNumber: lesson?.lessonNumber,
                                     description: data?.lesson?.description,
-                                    viewsNumber: data?.lesson?.viewsNumber
                                 }}
                             />
+
                             {
                                 data?.lesson?.lessonContent !== jsonState &&
                                 <div className="flex items-center justify-end">
@@ -58,12 +60,19 @@ const EditLesson = () => {
                             data?.lesson &&
                             <LexicalEditor key={data?.lesson?._id} jsonState={jsonState} onChange={setJsonState} />
                         }
-
-
+                        <div className="w-full mt-10">
+                            <h1 className="text-green-500 text-2xl font-bold ">Quizzes</h1>
+                            <AddNewQuestion setNewQuestions={setNewQuestions} />
+                        </div>
+                        {
+                            newQuestions?.map((e)=>(
+                                <span>{e.question}!!</span>
+                            ))
+                        }
                     </div>
             }
 
-        </ >
+        </>
     )
 }
 

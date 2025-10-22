@@ -1,5 +1,5 @@
 import { Button } from './ui/button'
-import { Link, replace, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Edit, Eye } from 'lucide-react'
 import useUser from '@/hooks/useUser'
 import { type Course } from './shared/course-card'
@@ -8,7 +8,7 @@ import Spinner from './ui/spinner'
 const AccessCourseCardButtons = ({ course }: { course: Course }) => {
     const USER = useUser();
     const navigate = useNavigate();
-    const mutation1 = usePOST(`/api/user/courses/${course?._id}/join`, ["courses"], () => { navigate(`/courses/${course?._id}`, { replace: true, state: { courseType: course?.type } }) })
+    const mutation1 = usePOST(`/api/user/courses/${course?._id}/join`, ["courses"], () => { navigate(`/courses/${course?._id}`, { replace: true, state: { courseType: course?.type, hasAccess: true } }) })
     return (
         <>
             {
@@ -30,7 +30,7 @@ const AccessCourseCardButtons = ({ course }: { course: Course }) => {
                                 {
                                     course?.hasAccess ?
                                         <Button size="sm" className="text-slate-100 bg-green-400 rounded-[6px]" type="button">
-                                            <Link to={`/courses/${course?._id}`} state={{ courseType: course?.type }} className="flex text-[.8rem] items-center gap-1">
+                                            <Link to={`/courses/${course?._id}`} state={{ courseType: course?.type, hasAccess: course?.hasAccess }} className="flex text-[.8rem] items-center gap-1">
                                                 continue
                                             </Link>
                                         </Button>
