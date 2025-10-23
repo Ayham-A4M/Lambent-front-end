@@ -19,6 +19,7 @@ import EditLesson from './pages/instructor-pages/edit-lessson/edit-lesson'
 import AddNewPage from './pages/instructor-pages/add-new-page/add-new-page';
 import Courses from './pages/user-pages/courses/Courses';
 import LessonView from './pages/user-pages/view-lesson/LessonView';
+import QuizzesManagement from './pages/instructor-pages/quizzes-management/quizzes-management';
 interface userContextInterface {
   userName: string,
   role: string,
@@ -62,6 +63,8 @@ function App() {
             <Route path='/instructor/courses/:courseId' element={<Lessons />} />
             <Route path='/instructor/courses/:courseId/edit' element={<EditCourseInformation />} />
             <Route path='/instructor/courses/:courseId/lessons/:lessonId/edit' element={<EditLesson />} />
+            <Route path='/instructor/courses/:courseId/lessons/:lessonId/edit/quizzes' element={<QuizzesManagement />} />
+
             <Route path='/instructor/courses/:courseId/:lessonId/new-page' element={<AddNewPage />} />
 
             <Route path='/instructor/courses/new' element={<CreateCourse />} />

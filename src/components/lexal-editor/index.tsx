@@ -152,7 +152,7 @@ export default function LexicalEditor({ onChange, jsonState }: LexicalEditorProp
     <LexicalComposer initialConfig={initialConfig as any} >
       <div className="border rounded-md ">
         <Toolbar />
-        <div className="h-[500px] overflow-auto">
+        <div className="h-[500px] overflow-y-auto">
 
           <RichTextPlugin
             contentEditable={
