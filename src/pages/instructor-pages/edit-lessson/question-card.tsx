@@ -1,10 +1,18 @@
-import React from "react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { FiCheck, FiX, FiMoreVertical } from "react-icons/fi";
-
+import { Button } from "@/components/ui/button";
+import type { questionType } from "./add-new-question";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 export type Option = {
     option: string;
     isCorrect: boolean;
@@ -15,11 +23,9 @@ export type QuestionProps = {
     options: Option[];
     explanation: string;
     difficulty: "easy" | "medium" | "hard";
-    /**
-     * Optional: renderable actions area in top-right (instructor controls).
-     * Keep it non-functional here — pass elements like <Menu /> from parent.
-     */
-    actions?: React.ReactNode;
+    _id?: string,
+    setEditQuestion: React.Dispatch<React.SetStateAction<questionType | null>>
+    setDeleteQuestionId: React.Dispatch<React.SetStateAction<string>>
 };
 
 const difficultyStyle: Record<QuestionProps["difficulty"], string> = {
@@ -28,33 +34,31 @@ const difficultyStyle: Record<QuestionProps["difficulty"], string> = {
     hard: "bg-red-100 text-red-700 border-red-200",
 };
 
-/**
- * Modern, production-ready QuestionCard for instructor (read-only)
- * - No framer-motion (hover/active uses Tailwind transitions only)
- * - Uses shadcn/ui primitives and Tailwind utility classes
- * - Accessible and responsive
- */
+
 function QuestionCard({
     question,
     options,
     explanation,
     difficulty,
-    actions,
+    _id,
+    setEditQuestion,
+    setDeleteQuestionId,
 }: QuestionProps) {
+
     return (
-        <article className="w-full max-w-[400px] mx-auto">
+        <article className="w-full  relative">
             <Card className="rounded-xl bg-card gap-3">
                 <CardHeader className="flex py-0 px-3 items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                         <h3 className="text-base sm:text-lg font-semibold leading-snug text-foreground truncate">
-                            {question} Instructor view — read only Instructor view — read only Instructor view — read only Instructor view — read only
+                            {question}
                         </h3>
                         <p className="mt-1 text-xs text-muted-foreground hidden sm:block">
-                            Instructor view — read only
+                            Instructor view — read — edit
                         </p>
                     </div>
 
-                    <div className="flex items-start gap-3">
+                    <div className="flex gap-3 items-center">
                         <Badge
                             className={cn(
                                 "capitalize px-3 py-1 text-xs font-medium rounded-full border",
@@ -65,23 +69,26 @@ function QuestionCard({
                         </Badge>
 
                         <div className="flex items-center">
-                            {actions ? (
-                                <div className="ml-1">{actions}</div>
-                            ) : (
-                                <button
-                                    type="button"
-                                    aria-label="question actions"
-                                    className="inline-flex items-center justify-center rounded-full p-1 hover:bg-muted/40 focus:outline-none focus:ring-2 focus:ring-ring"
-                                >
-                                    <FiMoreVertical className="text-muted-foreground" />
-                                </button>
-                            )}
+                            <DropdownMenu>
+                                <DropdownMenuTrigger>
+                                    <Button variant="outline" size="icon" className="rounded-full cursor-pointer size-8">
+                                        <FiMoreVertical />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    <DropdownMenuLabel>Question Config</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={() => { if (_id) { setDeleteQuestionId(_id) } }}>Delete</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => { setEditQuestion({ question, difficulty, explanation, options, _id }) }}>Edit</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+
+
                         </div>
                     </div>
                 </CardHeader>
 
                 <CardContent className="px-3 pb-4 pt-2 space-y-5">
-                    {/* Options list */}
                     <ul className="space-y-3">
                         {options.map((opt, idx) => (
                             <li key={idx}>

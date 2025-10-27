@@ -23,17 +23,6 @@ const Lessons = () => {
                     <AddLessonDialog disableButtons={mutation.isPending} onSubmit={(data: lessonType) => { mutation.mutate(data) }} />
                 }
             </div>
-            <div className="flex items-center flex-wrap gap-3">
-                <span>Progress : </span>
-                <span>{data?.progress?.progressPercentage}%</span>
-                <div className="w-full max-w-[350px] h-2 rounded-full border-[1px] bg-white">
-                    <div style={{ width: `${data?.progress?.progressPercentage}%` }} className="bg-primary h-full rounded-full">
-
-                    </div>
-                </div>
-            </div>
-
-
             {
                 isLoading
                     ?
@@ -41,7 +30,7 @@ const Lessons = () => {
                     :
                     (data?.lessons?.length > 0 && USER)
                         ?
-                        <div className="flex items-center justify-between gap-8 md:justify-start flex-wrap">
+                        <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(130px,1fr))]">
                             {
                                 data?.lessons?.map((e: any) => (
                                     <LessonCard key={e?._id} lesson={e} role={USER && USER.role}

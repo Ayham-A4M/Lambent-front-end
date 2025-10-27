@@ -20,6 +20,7 @@ import AddNewPage from './pages/instructor-pages/add-new-page/add-new-page';
 import Courses from './pages/user-pages/courses/Courses';
 import LessonView from './pages/user-pages/view-lesson/LessonView';
 import QuizzesManagement from './pages/instructor-pages/quizzes-management/quizzes-management';
+import Quiz from './pages/user-pages/quiz/Quiz';
 interface userContextInterface {
   userName: string,
   role: string,
@@ -50,7 +51,7 @@ function App() {
             <Route path='/my-courses' element={<div>my courses</div>} />
             <Route path='courses/:courseId' element={<Lessons />} />
             <Route path='courses/:courseId/lessons/:lessonId/view' element={<LessonView />} />
-
+            <Route path='courses/:courseId/lessons/:lessonId/quiz' element={<Quiz/>} />
           </Route>
         </Route>
 

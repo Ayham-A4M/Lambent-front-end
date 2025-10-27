@@ -31,7 +31,7 @@ const LessonCard = ({ lesson, role, isCompleted, isBookMark }: { lesson: any, ro
     }
     return (
         <>
-            <Link className={`${(role === "instructor" || hasAccess) ? "" : "pointer-events-none"}`} to={`${role == "instructor" ? "/instructor" : ""}/courses/${lesson?.courseId}/lessons/${lesson?._id}/${role == "instructor" ? "edit" : "view"}`} state={{ lesson: lesson }}>
+            <Link className={`${(role === "instructor" || hasAccess) ? "" : "pointer-events-none"} flex items-center justify-center`} to={`${role == "instructor" ? "/instructor" : ""}/courses/${lesson?.courseId}/lessons/${lesson?._id}/${role == "instructor" ? "edit" : "view"}`} state={{ lesson: lesson }}>
                 <div className={`w-32 h-40 bg-gray-200 dark:bg-zinc-300  relative rounded-r-xl  py-1 border-l-[10px] text-primary border-primary  flex flex-col items-center justify-evenly`}>
                     {
                         isCompleted &&

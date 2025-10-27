@@ -16,6 +16,8 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import type { UseMutationResult } from '@tanstack/react-query';
+import Spinner from '@/components/ui/spinner';
 
 const questionSchema = z.object({
     question: z.string().nonempty(),
@@ -25,20 +27,33 @@ const questionSchema = z.object({
     })).min(2, "At least 2 options required").max(6, "Maximum 6 options allowed"),
     explanation: z.string().nonempty(),
     difficulty: z.enum(["easy", "medium", "hard"]),
-    id: z.uuid().optional()
+    id: z.uuid().optional(),
+    _id: z.string().optional()
 })
+
+interface props {
+    setNewQuestions: React.Dispatch<React.SetStateAction<questionType[] | null>>,
+    editQuestion: questionType | null,
+    setEditQuestion: React.Dispatch<React.SetStateAction<questionType | null>>,
+    updateQuestionMutation: UseMutationResult<any, Error, questionType>
+}
+
+
 export type questionType = z.infer<typeof questionSchema>;
-const AddNewQuestion = ({ setNewQuestions }: { setNewQuestions: React.Dispatch<React.SetStateAction<questionType[] | null>> }) => {
+
+const AddNewQuestion = ({ setNewQuestions, editQuestion, setEditQuestion, updateQuestionMutation }: props) => {
     const form = useForm<questionType>({
         resolver: zodResolver(questionSchema),
 
-        defaultValues: {
-            question: "",
-            explanation: "",
-            difficulty: "easy",
-            options: [{ option: "", isCorrect: true, }, { option: "", isCorrect: false }],
+        values: {
+            question: editQuestion?.question || "",
+            explanation: editQuestion?.explanation || "",
+            difficulty: editQuestion?.difficulty || "easy",
+            options: editQuestion?.options || [{ option: "", isCorrect: true, }, { option: "", isCorrect: false }],
+            _id: editQuestion?._id || undefined,
         }
     })
+
     const { fields, append, remove } = useFieldArray({
         control: form.control,
         name: "options"
@@ -60,10 +75,20 @@ const AddNewQuestion = ({ setNewQuestions }: { setNewQuestions: React.Dispatch<R
         newQuestion.id = uuidv4();
         setNewQuestions((prev: questionType[] | null) => (prev ? [...prev, data] : [data]))
     }
+
+    const handleSubmitForm = async (data: questionType) => {
+        if (editQuestion) {
+            updateQuestionMutation.mutate(data);
+
+        } else {
+            handleAddNewOne(data)
+        }
+        form.reset()
+        setEditQuestion(null);
+    }
     return (
-        // <Card className='w-full px-3 bg-background shadow-md rounded-none'>
         <Form {...form}>
-            <form onSubmit={form.handleSubmit((data: questionType) => { handleAddNewOne(data); form.reset() })} className="space-y-3">
+            <form onSubmit={form.handleSubmit((data: questionType) => { handleSubmitForm(data) })} className="space-y-3">
                 <FormField
                     control={form.control}
                     name="question"
@@ -103,8 +128,7 @@ const AddNewQuestion = ({ setNewQuestions }: { setNewQuestions: React.Dispatch<R
 
                         <h1>which is the correct</h1>
                         <RadioGroup
-                            defaultValue='0'
-                            // value={form.watch("options").findIndex(opt => opt.isCorrect).toString()}
+                            defaultValue={"0"}
                             onValueChange={(value) => handleCorrectOptionChange(parseInt(value))}
                             className="flex flex-col gap-2"
                         >
@@ -122,9 +146,15 @@ const AddNewQuestion = ({ setNewQuestions }: { setNewQuestions: React.Dispatch<R
                     </div>
                 }
 
+                <Button type='button' disabled={fields.length >= 6} onClick={() => {
+                    fields.length < 6 &&
+                        append({ isCorrect: false, option: "" })
+                }} className='cursor-pointer'>
+                    new option <span className='text-xl'>+</span>
+                </Button>
+
 
                 <FormField
-                
                     control={form.control}
                     name="difficulty"
                     render={({ field }) => (
@@ -149,17 +179,6 @@ const AddNewQuestion = ({ setNewQuestions }: { setNewQuestions: React.Dispatch<R
                         </FormItem>
                     )}
                 />
-
-
-
-                <Button type='button' disabled={fields.length >= 6} onClick={() => {
-                    fields.length < 6 &&
-                        append({ isCorrect: false, option: "" })
-                }} className='cursor-pointer'>
-                    new option <span className='text-xl'>+</span>
-                </Button>
-
-
                 <FormField
                     control={form.control}
                     name="explanation"
@@ -174,9 +193,19 @@ const AddNewQuestion = ({ setNewQuestions }: { setNewQuestions: React.Dispatch<R
                     )}
                 />
 
-
-
-                <Button type="submit" className='cursor-pointer w-full rounded-none text-slate-200'>Add Question</Button>
+                <Button disabled={updateQuestionMutation.isPending} type="submit" className='cursor-pointer w-full rounded-none text-slate-200'>
+                    {
+                        updateQuestionMutation.isPending ?
+                            <>
+                                <Spinner talwindSize='size-6' />
+                            </>
+                            :
+                            editQuestion ?
+                                "Edit Question"
+                                :
+                                "Add Question"
+                    }
+                </Button>
 
 
             </form>
