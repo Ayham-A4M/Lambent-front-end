@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import useGET from "@/hooks/useGet";
 import SpinnerPage from "@/components/spinner-page";
 import LexicalEditor from "@/components/lexal-editor";
@@ -7,24 +7,17 @@ import { Button } from "@/components/ui/button";
 import usePUT from "@/hooks/usePUT";
 import Spinner from "@/components/ui/spinner";
 import LessonInformation from "@/components/shared/lesson-information";
-import AddNewQuestion from "./add-new-question";
-import { type questionType } from "./add-new-question";
-import QuestionCard from "./question-card";
 const EditLesson = () => {
-    const location = useLocation()
     const { lessonId, courseId } = useParams();
     const { data, isLoading } = useGET(`/api/instructor/courses/${courseId}/lessons/${lessonId}`, []);
-    const { lesson } = location.state;
     const [jsonState, setJsonState] = useState<string>("");
     const { mutation } = usePUT(`/api/instructor/courses/${courseId}/lessons/${lessonId}`, { lessonContent: jsonState }, ["lesson"]);
     useEffect(() => {
-        console.log("arraived data :)", data?.lesson?.lessonContent);
         setJsonState("");
         if (data?.lesson?.lessonContent) {
             setJsonState(JSON.parse(data?.lesson?.lessonContent));
         }
     }, [data])
-    const [newQuestions, setNewQuestions] = useState<questionType[] | null>(null);
     return (
         <>
             {
@@ -36,7 +29,7 @@ const EditLesson = () => {
                             <LessonInformation
                                 lesson={{
                                     name: data?.lesson?.name,
-                                    lessonNumber: lesson?.lessonNumber,
+                                    lessonNumber: data?.lesson?.lessonNumber,
                                     description: data?.lesson?.description,
                                 }}
                             />

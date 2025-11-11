@@ -3,18 +3,16 @@ import LessonInformation from "@/components/shared/lesson-information"
 import SpinnerPage from "@/components/spinner-page";
 import { Button } from "@/components/ui/button";
 import useGET from "@/hooks/useGet"
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { CheckCircle2Icon } from "lucide-react";
 import { handleConfetti } from "@/utils/handleConfetti";
 import usePUT from "@/hooks/usePUT";
 import Spinner from "@/components/ui/spinner";
 import { FaQuestion } from "react-icons/fa";
 const LessonView = () => {
-    const location = useLocation()
     const { lessonId, courseId } = useParams();
     const { data, isLoading } = useGET(`/api/user/courses/${courseId}/lessons/${lessonId}`, ["lesson"]);
-    const { lesson } = location.state;
-    const { mutation } = usePUT(`/api/user/progress/${courseId}`, { completedLessonNumber: lesson?.lessonNumber }, [], handleConfetti)
+    const { mutation } = usePUT(`/api/user/progress/${courseId}`, { completedLessonNumber: data?.lesson?.lessonNumber }, [], handleConfetti)
     return (
         <>
             {
@@ -27,7 +25,7 @@ const LessonView = () => {
                         <LessonInformation
                             lesson={{
                                 name: data?.lesson?.name,
-                                lessonNumber: lesson?.lessonNumber,
+                                lessonNumber: data?.lesson?.lessonNumber,
                                 description: data?.lesson?.description,
                             }}
                         />
