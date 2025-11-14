@@ -15,19 +15,17 @@ const Quiz = () => {
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState<number>(0);
   const [answerId, setAnswerId] = useState<string | null>(null);
   const [answerIdx, setAnswerIdx] = useState<number | null>(null);
-  const [showCompleteQuizPopup,setShowCompleteQuizPopup]=useState<boolean>(false);
-  const { data, isLoading } = useGET(`/api/user/courses/${courseId}/lessons/${lessonId}/quiz`,["quiz"]);
+  const [showCompleteQuizPopup, setShowCompleteQuizPopup] = useState<boolean>(false);
+  const { data, isLoading } = useGET(`/api/user/courses/${courseId}/lessons/${lessonId}/quiz`, ["quiz"]);
   const handleConfirmAnswer = () => {
-    console.log(answerIdx, "index of answer");
     if (answerIdx == null) {
       return;
     }
     const newAnswer = { answerId, isCorrect: data?.quiz?.questions[currentQuestionIdx].options[answerIdx].isCorrect, answerIdx, questionId: data?.quiz?.questions[currentQuestionIdx]._id };
-    console.log(newAnswer);
     setAnswers((prev) => (prev.length > 0 ? [...prev, newAnswer] : [newAnswer]));
     if (currentQuestionIdx + 1 < data?.quiz?.questions.length) {
       setCurrentQuestionIdx((prev: number) => prev + 1);
-    }else if(currentQuestionIdx+1===data?.quiz?.question.length){
+    } else if (currentQuestionIdx + 1 === data?.quiz?.questions?.length) {
       setShowCompleteQuizPopup(true);
       mutation.mutate();
     }
@@ -35,7 +33,7 @@ const Quiz = () => {
     setAnswerId(null);
     setAnswerIdx(null);
   };
-  const { mutation } = usePOST(`/api/user/courses/${courseId}/lessons/${lessonId}/quiz/${data?.quiz?._id}/completed`,{answers});
+  const { mutation } = usePOST(`/api/user/courses/${courseId}/lessons/${lessonId}/quiz/${data?.quiz?._id}/completed`, { answers });
   return (
     <>
       {isLoading ? (
@@ -43,8 +41,11 @@ const Quiz = () => {
       ) : (
         <div className="w-full flex max-[1100px]:flex-wrap gap-20">
           <div className="w-full space-y-6">
-            <QuizHeader percentage={parseFloat(((answers.length / data?.quiz?.questions?.length) * 100).toFixed(1))} />
-            {answers[currentQuestionIdx] ? (
+            <QuizHeader percentage={parseFloat((((data?.hasCompletedQuiz?data?.hasCompletedQuiz?.answers?.length:answers.length) / data?.quiz?.questions?.length) * 100).toFixed(1))} />
+            {data?.hasCompletedQuiz?.answers[currentQuestionIdx] ? (
+
+              <AnsweredQuestion question={data?.quiz?.questions[currentQuestionIdx]} answerIdx={data?.hasCompletedQuiz?.answers[currentQuestionIdx]?.answerIdx} questionIndex={currentQuestionIdx} quizLength={data?.quiz?.questions?.length} />
+            ) : answers[currentQuestionIdx] ? (
               <AnsweredQuestion question={data?.quiz?.questions[currentQuestionIdx]} answerIdx={answers[currentQuestionIdx].answerIdx} questionIndex={currentQuestionIdx} quizLength={data?.quiz?.questions?.length} />
             ) : (
               <Question question={data?.quiz?.questions[currentQuestionIdx]} questionIndex={currentQuestionIdx} quizLength={data?.quiz?.questions?.length} answerId={answerId} setAnswerId={setAnswerId} setAnswerIdx={setAnswerIdx} />
@@ -61,7 +62,7 @@ const Quiz = () => {
               >
                 Previous
               </Button>
-              {answers[currentQuestionIdx] ? (
+              {answers[currentQuestionIdx] || data?.hasCompletedQuiz?.answers[currentQuestionIdx] ? (
                 <Button
                   disabled={currentQuestionIdx + 1 >= data?.quiz?.questions?.length}
                   className="bg-primary rounded-xl text-slate-200 cursor-pointer font-bold"
@@ -72,22 +73,29 @@ const Quiz = () => {
                   Next
                 </Button>
               ) : (
-                <Button
-                  disabled={currentQuestionIdx >= data?.quiz?.questions?.length || answerIdx == null}
-                  className="bg-primary rounded-xl text-slate-200 cursor-pointer font-bold"
-                  onClick={() => {
-                    handleConfirmAnswer();
-                  }}
-                >
-                  Submit
-                </Button>
+                !data?.hasCompletedQuiz && (
+                  <Button
+                    disabled={currentQuestionIdx >= data?.quiz?.questions?.length || answerIdx == null}
+                    className="bg-primary rounded-xl text-slate-200 cursor-pointer font-bold"
+                    onClick={() => {
+                      handleConfirmAnswer();
+                    }}
+                  >
+                    Submit
+                  </Button>
+                )
               )}
             </div>
           </div>
-          <Answers answers={answers} quizLength={data?.quiz?.questions.length} />
+          <Answers answers={data?.hasCompletedQuiz?.answers || answers} quizLength={data?.quiz?.questions.length} />
         </div>
       )}
-      <CompletedQuizDialog open={true} onClose={()=>{}}/>
+      <CompletedQuizDialog
+        open={showCompleteQuizPopup}
+        onClose={() => {
+          setShowCompleteQuizPopup(false);
+        }}
+      />
     </>
   );
 };

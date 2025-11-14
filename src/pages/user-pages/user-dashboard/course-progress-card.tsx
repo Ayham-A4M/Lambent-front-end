@@ -39,19 +39,19 @@ const CourseProgressCard = ({ title, value, courseType }: props) => {
     }
 
     return (
-        <div className="w-full  p-2 flex flex-col gap-1.5 border-b-2">
+        <div className="w-full  py-3  flex flex-col gap-1.5 border-b-2">
             <div className="flex items-center justify-between">
-                <span className="text-md font-light">{title}</span>
+                <span className="text-[.9rem] font-light">{title}</span>
                 <div className="flex items-center gap-2 text-[.7rem]">
                     {courseType}
                     {getCourseTypeIcon()}
                 </div>
             </div>
-            <div className="w-full h-2 rounded-xl vertical-stripes border-r-[1px]">
+            <div className="w-full h-2 rounded-xl bg-slate-200 dark:bg-slate-600 border-r-[1px]">
                 <div className={`h-full rounded-xl ${getProgressColor()}`} style={{ width: `${value}%` }}>
                 </div>
             </div>
-            <div className="flex items-center gap-2 text-xl">
+            <div className="flex items-center gap-2 text-[.9rem]">
                 <span>{value}%</span>
                 {
                     value === 100 ?
