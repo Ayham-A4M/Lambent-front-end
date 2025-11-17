@@ -10,6 +10,7 @@ const StatisticsCard = ({ title, value, children, icon }: { title: string, value
                 </div>
             </CardHeader>
             <CardContent>
+                {children&&children}
                 {value && <span className="text-xl">{value}</span>}
             </CardContent>
 

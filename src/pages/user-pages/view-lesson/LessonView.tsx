@@ -10,11 +10,13 @@ import usePUT from "@/hooks/usePUT";
 import Spinner from "@/components/ui/spinner";
 import { FaQuestion } from "react-icons/fa";
 import useCalculateLearningTime from "@/hooks/useCalculateLearningTime";
+import useUpdateLearningTime from "@/hooks/useUpdateLearningTime";
 const LessonView = () => {
   const { lessonId, courseId } = useParams();
   const { data, isLoading } = useGET(`/api/user/courses/${courseId}/lessons/${lessonId}`, ["lesson"]);
   const { mutation } = usePUT(`/api/user/progress/${courseId}`, { completedLessonNumber: data?.lesson?.lessonNumber }, [], handleConfetti);
-  useCalculateLearningTime();
+  const {startingLearningTime,unFocusTime}=useCalculateLearningTime();
+  const {updateLearningTimeMutation}=  useUpdateLearningTime(`/api/user/learningTime`)
   return (
     <>
       {isLoading ? (
@@ -58,6 +60,7 @@ const LessonView = () => {
                   className="bg-green-400 cursor-pointer font-bold"
                   onClick={() => {
                     mutation?.mutate();
+                    updateLearningTimeMutation.mutate(((Date.now()-(startingLearningTime.current+unFocusTime.current))/60000))
                   }}
                 >
                   {mutation?.isPending ? (

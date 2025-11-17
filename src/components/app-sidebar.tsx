@@ -56,9 +56,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <NavLink to={item.url}
                     className={(({ isActive }) => (`${isActive ? "bg-popover dark:bg-accent " : ""}   text-[1.1rem] text-popover-foreground  flex items-center justify-between py-3.5 px-5 w-full font-light`))}>
                     {item.title}
-                    {
+                    <div className={`w-fit p-2 rounded-[.5rem] bg-slate-200 dark:bg-slate-700`}>
+                      {
                       <item.icon className={`${item.icon_talwind_color}`}/>
                     }
+                    </div>
                   </NavLink>
 
                 </SidebarMenuButton>

@@ -24,6 +24,7 @@ const useCalculateLearningTime = () => {
       window.removeEventListener("blur", handleNotFocus);
     };
   }, []);
+  return {startingLearningTime,unFocusTime}
 };
 
 export default useCalculateLearningTime;
