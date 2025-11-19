@@ -21,6 +21,7 @@ import Courses from './pages/user-pages/courses/Courses';
 import LessonView from './pages/user-pages/view-lesson/LessonView';
 import QuizzesManagement from './pages/instructor-pages/quizzes-management/quizzes-management';
 import Quiz from './pages/user-pages/quiz/Quiz';
+import Badges from './pages/user-pages/badges/badges';
 interface userContextInterface {
   userName: string,
   role: string,
@@ -47,7 +48,7 @@ function App() {
           <Route element={<DashboardLayout />}>
             <Route path='/user-dashboard' element={<UserDashboard />} />
             <Route path='/courses' element={<Courses />} />
-            <Route path='/badges' element={<div>badges</div>} />
+            <Route path='/badges' element={<Badges/>} />
             <Route path='/my-courses' element={<div>my courses</div>} />
             <Route path='courses/:courseId' element={<Lessons />} />
             <Route path='courses/:courseId/lessons/:lessonId/view' element={<LessonView />} />

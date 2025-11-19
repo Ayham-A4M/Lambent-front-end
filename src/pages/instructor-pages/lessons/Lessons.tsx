@@ -38,7 +38,6 @@ const Lessons = () => {
                                         isCompleted={data?.progress?.completedLessons?.includes(e?.lessonNumber)} />
                                 ))
                             }
-
                         </div>
                         :
                         <span>no lessons</span>

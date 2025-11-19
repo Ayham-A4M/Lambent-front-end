@@ -14,6 +14,7 @@ import type { ReactNode } from "react";
 import { IoLanguage } from "react-icons/io5";
 import { GiChemicalDrop } from "react-icons/gi";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 const CourseProgressCard = ({ title, value, courseType, courseId }: props) => {
   const getProgressColor = (): string => {
     if (value <= 20) {
@@ -60,17 +61,13 @@ const CourseProgressCard = ({ title, value, courseType, courseId }: props) => {
       </div>
       <div className="flex items-center gap-2 text-[.9rem]">
         <span>{value}%</span>
-        {value === 100 ? (
-          <div className="flex items-center gap-3">
-            <BsFillPatchCheckFill className="text-green-400" />
-            <Link to={`/courses/${courseId}`} state={{courseType}}>Go</Link>
-          </div>
-        ) : (
-          <div className="flex items-center gap-3">
-            <TbTargetArrow className="text-red-400" />
-            <Link to={`/courses/${courseId}`}>Go</Link>
-          </div>
-        )}
+
+        <div className="flex items-center gap-3">
+          <BsFillPatchCheckFill className="text-green-400" />
+            <Link to={`/courses/${courseId}`} state={{ courseType }} className="underline hover:text-primary">
+              Go
+            </Link>
+        </div>
       </div>
     </div>
   );
