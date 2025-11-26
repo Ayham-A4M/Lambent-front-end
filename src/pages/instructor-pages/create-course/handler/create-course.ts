@@ -5,7 +5,6 @@ const createCourse = async (data: CreateCourseType) => {
     const formData = new FormData();
     formData.append("image", data?.image);
     const courseObject = {
-    
         name: data.name,
         description: data.description,
         isFree: data.isFree,

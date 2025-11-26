@@ -159,7 +159,7 @@ const AddNewQuestion = ({ setNewQuestions, editQuestion, setEditQuestion, update
                     name="difficulty"
                     render={({ field }) => (
                         <FormItem className='w-full max-w-[500px]'>
-                            <FormLabel>Course Type</FormLabel>
+                            <FormLabel>question type</FormLabel>
                             <FormControl >
                                 <Select onValueChange={field.onChange} defaultValue="easy">
                                     <SelectTrigger className="w-full">

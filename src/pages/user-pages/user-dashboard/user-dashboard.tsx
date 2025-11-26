@@ -1,5 +1,5 @@
 import StatisticsCard from "@/components/statistics-card";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { GiStopwatch } from "react-icons/gi";
 import { FaFire, FaGraduationCap, FaBrain } from "react-icons/fa";
 import CourseProgressCard from "./course-progress-card";
@@ -60,17 +60,18 @@ const UserDashboard = () => {
               }
             />
           </div>
-          <Card className="w-full rounded-2xl px-3 grid max-[991px]:grid-cols-1 grid-cols-2">
-            <div className="px-2">
+          <Card className="w-full rounded-2xl ">
+            <CardHeader className="px-3">
               <h1 className="text-2xl font-bold">Learning Track</h1>
-              {data?.coursesProgress?.map((e: any) => (
-                <CourseProgressCard courseId={e?.courseId} key={e?._id} title={e?.courseName} value={e?.progressPercentage} courseType={e?.courseType} />
-              ))}
-            </div>
-            <div className="space-y-2 w-full">
-              <h1 className="text-2xl font-bold px-2">Quizzes Track</h1>
+            </CardHeader>
+            <CardContent className="px-3 gap-6 grid max-[991px]:grid-cols-1 grid-cols-2">
+              <div className="px-2">
+                {data?.coursesProgress?.map((e: any) => (
+                  <CourseProgressCard courseId={e?.courseId} key={e?._id} title={e?.courseName} value={e?.progressPercentage} courseType={e?.courseType} />
+                ))}
+              </div>
               <LearningTimeChart chartData={getChartData(data?.spendTimeLearning?.weekChart || null)} />
-            </div>
+            </CardContent>
           </Card>
         </div>
       )}

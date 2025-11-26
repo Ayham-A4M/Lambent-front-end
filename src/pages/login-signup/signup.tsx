@@ -100,7 +100,7 @@ const SignUp = ({ setIsRegestring }: { setIsRegestring: React.Dispatch<React.Set
 
 
     return (
-        <Card className='w-[95%] sign-up max-w-[450px] p-6 gap-4 bg-background rounded-none'>
+        <Card className='w-full sign-up  p-6 gap-4 bg-background rounded-none'>
             <CardHeader className="p-0">
 
                 <CardTitle className='text-2xl BitcountText text-ring font-extrabold text-center'>

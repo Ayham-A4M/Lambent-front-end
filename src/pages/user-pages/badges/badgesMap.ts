@@ -6,7 +6,8 @@ import wisdomKeeper from "../../../assets/badges/wisdom-keeper.svg"
 import habitFormer from "../../../assets/badges/habit-former.svg"
 import legendaryStreak from "../../../assets/badges/legendary-streak.svg"
 import teachingSage from "../../../assets/badges/teaching-sage.svg"
-
+import midnightOwl from "../../../assets/badges/midnight-owl.svg"
+import gameOn from "../../../assets/badges/game-on.svg"
 
 interface badges{
     [key:string]:string
@@ -19,6 +20,8 @@ export const badgesObj:badges={
     "wisdom-keeper":wisdomKeeper,
     "habit-former":habitFormer,
     "teaching-sage":teachingSage,
-    "legendary-streak":legendaryStreak
+    "legendary-streak":legendaryStreak,
+    "midnight-owl":midnightOwl,
+    "game-on":gameOn
 
 }
