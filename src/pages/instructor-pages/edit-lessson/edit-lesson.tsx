@@ -64,7 +64,7 @@ const EditLesson = () => {
 
             <input type="file" accept=".pdf" className="hidden" id="input-file" onChange={handleChooseFile} />
             <div className="flex items-center gap-6">
-              <label htmlFor="input-file" className="px-6 py-2 bg-primary text-slate-200 rounded-[2px] cursor-pointer">
+              <label htmlFor="input-file" className="px-6 py-2 bg-primary text-slate-200 rounded-[6px] cursor-pointer">
                 {file || data?.lesson?.pdfUrl ? "change file" : "choose file"}
               </label>
               {file && (
@@ -79,19 +79,6 @@ const EditLesson = () => {
                 </Button>
               )}
             </div>
-
-            {data?.lesson?.lessonContent !== jsonState && (
-              <div className="flex items-center justify-end">
-                <Button
-                  onClick={() => {
-                    handleSaveChanges();
-                  }}
-                  className="cursor-pointer"
-                >
-                  {mutation.isPending ? <Spinner talwindSize="size-5" /> : "save changes"}
-                </Button>
-              </div>
-            )}
           </div>
 
           <PdfViewr pdfUrl={fileUrl ? fileUrl : `http://localhost:8000${data?.lesson?.pdfUrl}`} />
@@ -103,10 +90,22 @@ const EditLesson = () => {
 
           {data?.lesson && <LexicalEditor key={data?.lesson?._id} jsonState={jsonState} onChange={setJsonState} />}
           <div className="flex justify-end">
-            <div className="flex justify-end items-center">
+            <div className="flex justify-end items-center gap-6">
+              {(data?.lesson?.lessonContent !== jsonState||!!file) && (
+                <div className="flex items-center justify-end">
+                  <Button
+                    onClick={() => {
+                      handleSaveChanges();
+                    }}
+                    className="cursor-pointer"
+                  >
+                    {mutation.isPending ? <Spinner talwindSize="size-5" /> : "save changes"}
+                  </Button>
+                </div>
+              )}
               <Button
                 variant={"outline"}
-                className="cursor-pointer border-3 border-primary text-primary rounded-xl font-semibold hover:bg-primary hover:text-slate-100 "
+                className="cursor-pointer border-3  border-primary text-primary  font-semibold hover:bg-primary hover:text-slate-100 "
               >
                 <Link to={`/instructor/courses/${courseId}/lessons/${lessonId}/edit/quizzes`}>Management Realated Questions</Link>
               </Button>

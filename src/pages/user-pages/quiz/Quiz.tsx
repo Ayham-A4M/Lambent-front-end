@@ -9,6 +9,8 @@ import AnsweredQuestion from "./answeredQuestion";
 import Answers from "./answers";
 import usePOST from "@/hooks/usePOST";
 import CompletedQuizDialog from "@/components/dialogs/completed-quiz";
+import useCalculateLearningTime from "@/hooks/useCalculateLearningTime";
+import useNavigationReporter from "@/hooks/useNavigationReporter";
 const Quiz = () => {
   const { courseId, lessonId } = useParams();
   const [answers, setAnswers] = useState<any[]>([]);
@@ -34,6 +36,8 @@ const Quiz = () => {
     setAnswerIdx(null);
   };
   const { mutation } = usePOST(`/api/user/courses/${courseId}/lessons/${lessonId}/quiz/${data?.quiz?._id}/completed`, { answers });
+  const {startingLearningTime,unFocusTime}=useCalculateLearningTime();
+  useNavigationReporter(startingLearningTime.current,unFocusTime.current);
   return (
     <>
       {isLoading ? (

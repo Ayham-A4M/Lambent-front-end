@@ -11,12 +11,16 @@ import Spinner from "@/components/ui/spinner";
 import { FaQuestion } from "react-icons/fa";
 import useCalculateLearningTime from "@/hooks/useCalculateLearningTime";
 import useUpdateLearningTime from "@/hooks/useUpdateLearningTime";
+import PdfViewr from "@/components/pdf-viewr";
+import useNavigationReporter from "@/hooks/useNavigationReporter";
 const LessonView = () => {
   const { lessonId, courseId } = useParams();
   const { data, isLoading } = useGET(`/api/user/courses/${courseId}/lessons/${lessonId}`, ["lesson"]);
   const { mutation } = usePUT(`/api/user/progress/${courseId}`, { completedLessonNumber: data?.lesson?.lessonNumber }, [], handleConfetti);
-  const {startingLearningTime,unFocusTime}=useCalculateLearningTime();
-  const {updateLearningTimeMutation}=  useUpdateLearningTime(`/api/user/learningTime`)
+  const { startingLearningTime, unFocusTime } = useCalculateLearningTime();
+  // const { updateLearningTimeMutation } = useUpdateLearningTime(`/api/user/learningTime`);
+  useNavigationReporter(startingLearningTime.current, unFocusTime.current);
+
   return (
     <>
       {isLoading ? (
@@ -30,7 +34,7 @@ const LessonView = () => {
               description: data?.lesson?.description,
             }}
           />
-          {(mutation?.isSuccess||data?.lesson?.hasCompleted) && (
+          {(mutation?.isSuccess || data?.lesson?.hasCompleted) && (
             <div className="flex justify-end">
               <div className="py-2 px-3 text-xl font-bold text-green-400 rounded-[2px] flex items-center gap-2">
                 Completed
@@ -38,12 +42,16 @@ const LessonView = () => {
               </div>
             </div>
           )}
+          {data?.lesson?.pdfUrl && <PdfViewr pdfUrl={`http://localhost:8000${data?.lesson?.pdfUrl}`} />}
           {data?.lesson && <LexicalViewer jsonState={data?.lesson?.lessonContent} key={data?.lesson?._id} />}
 
           {data?.hasQuizz && (
             <div className="flex items-end-safe gap-5">
               <Link to={`/courses/${courseId}/lessons/${lessonId}/quiz`} className="relative">
-                <Button className="border-3 group mt-3 bg-white relative cursor-pointer  border-orange-400 text-orange-400 font-extrabold" variant="outline">
+                <Button
+                  className="border-3 group mt-3 bg-white relative cursor-pointer  border-orange-400 text-orange-400 font-extrabold"
+                  variant="outline"
+                >
                   <span className="group-hover:text-slate-100 z-20 duration-400 ">Take Quiz</span>
                   <div className="absolute left-0 w-0 duration-300 z-0    h-full bg-orange-400 group-hover:w-full"></div>
                   <FaQuestion className="absolute size-4  -top-2 -right-1 rotate-[-30deg] origin-bottom-right     duration-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-3 group-hover:-translate-y-0.5 group-hover:rotate-12" />
@@ -52,7 +60,7 @@ const LessonView = () => {
               {data?.hasCompletedQuiz && <CheckCircle2Icon className="text-2xl text-orange-400" />}
             </div>
           )}
-          {(!mutation?.isSuccess && !data?.lesson?.hasCompleted) && (
+          {!mutation?.isSuccess && !data?.lesson?.hasCompleted && (
             <div className="flex py-3 justify-end items-center">
               {
                 <Button
@@ -60,7 +68,7 @@ const LessonView = () => {
                   className="bg-green-400 cursor-pointer font-bold"
                   onClick={() => {
                     mutation?.mutate();
-                    updateLearningTimeMutation.mutate(((Date.now()-(startingLearningTime.current+unFocusTime.current))/60000))
+                    // updateLearningTimeMutation.mutate((Date.now() - (startingLearningTime.current + unFocusTime.current)) / 60000);
                   }}
                 >
                   {mutation?.isPending ? (
