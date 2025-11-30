@@ -10,7 +10,6 @@ import usePUT from "@/hooks/usePUT";
 import Spinner from "@/components/ui/spinner";
 import { FaQuestion } from "react-icons/fa";
 import useCalculateLearningTime from "@/hooks/useCalculateLearningTime";
-import useUpdateLearningTime from "@/hooks/useUpdateLearningTime";
 import PdfViewr from "@/components/pdf-viewr";
 import useNavigationReporter from "@/hooks/useNavigationReporter";
 const LessonView = () => {
@@ -18,7 +17,6 @@ const LessonView = () => {
   const { data, isLoading } = useGET(`/api/user/courses/${courseId}/lessons/${lessonId}`, ["lesson"]);
   const { mutation } = usePUT(`/api/user/progress/${courseId}`, { completedLessonNumber: data?.lesson?.lessonNumber }, [], handleConfetti);
   const { startingLearningTime, unFocusTime } = useCalculateLearningTime();
-  // const { updateLearningTimeMutation } = useUpdateLearningTime(`/api/user/learningTime`);
   useNavigationReporter(startingLearningTime.current, unFocusTime.current);
 
   return (
@@ -42,7 +40,7 @@ const LessonView = () => {
               </div>
             </div>
           )}
-          {data?.lesson?.pdfUrl && <PdfViewr pdfUrl={`http://localhost:8000${data?.lesson?.pdfUrl}`} />}
+          {data?.lesson?.pdfUrl && <PdfViewr pdfUrl={`${import.meta.env.VITE_BACKEND_URL}${data?.lesson?.pdfUrl}`} />}
           {data?.lesson && <LexicalViewer jsonState={data?.lesson?.lessonContent} key={data?.lesson?._id} />}
 
           {data?.hasQuizz && (
@@ -68,7 +66,6 @@ const LessonView = () => {
                   className="bg-green-400 cursor-pointer font-bold"
                   onClick={() => {
                     mutation?.mutate();
-                    // updateLearningTimeMutation.mutate((Date.now() - (startingLearningTime.current + unFocusTime.current)) / 60000);
                   }}
                 >
                   {mutation?.isPending ? (

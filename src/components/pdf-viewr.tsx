@@ -8,7 +8,6 @@ const PdfViewr = ({ pdfUrl }: { pdfUrl: string }) => {
   const [numberOfPage, setNumberOfPage] = useState<number>(1);
   const [numPages, setNumPages] = useState<number>(1);
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
-    console.log(numPages);
     setNumPages(numPages);
     setNumberOfPage(1);
   }
@@ -21,7 +20,6 @@ const PdfViewr = ({ pdfUrl }: { pdfUrl: string }) => {
 
     window.addEventListener("resize", handleResize);
 
-    // Cleanup on unmount
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
